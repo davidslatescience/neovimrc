@@ -34,3 +34,17 @@ vim.opt.updatetime = 50
 
 vim.opt.colorcolumn = "120"
 
+-- error formats for eslint
+vim.opt.errorformat = {'%f: line %l\\, col %c\\, %trror - %m', '%f: line %l\\, col %c\\, %tarning - %m'}
+
+-- vim.opt.foldmethod = "expr"
+-- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- -- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
+-- -- vim.opt.foldtext = ""
+-- vim.opt.foldcolumn = "auto"
+-- vim.opt.foldlevel = 1
+-- function _G.MyFoldText()
+--   return vim.fn.getline(vim.v.foldstart)
+-- end
+-- vim.opt.foldtext = 'v:lua.MyFoldText()'
+--

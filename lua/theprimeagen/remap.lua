@@ -38,7 +38,7 @@ vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
 -- vertical edit mode C-c doesn't work correctly - need to press ESC, so remap it here so they work the same
 -- This is going to get me cancelled
-vim.keymap.set("i", "<C-c>", "<Esc>")
+-- vim.keymap.set("i", "<C-c>", "<Esc>")
 
 -- no operation
 vim.keymap.set("n", "Q", "<nop>")
@@ -184,17 +184,18 @@ vim.keymap.set("n", "<leader>roo", "<cmd>e ~/<CR>");
 vim.keymap.set("n", "<leader>cur", "<cmd>e ~/Dev/SlateRoot/Experiments/Content/episodes/CardsToTen<CR>");
 
 -- shortcut to enter normal mode
-vim.keymap.set("i", "kj", "<Esc>", { noremap = true })
+-- vim.keymap.set("i", "kj", "<Esc>", { noremap = true })
 
 -- change copilot completion key
-vim.keymap.set('i', '<Right>', 'copilot#Accept("\\<CR>")', {
-    expr = true,
-    replace_keycodes = false
-})
-vim.g.copilot_no_tab_map = true
+-- vim.keymap.set('i', '<Right>', 'copilot#Accept("\\<CR>")', {
+--     expr = true,
+--     replace_keycodes = false
+-- })
+vim.g.copilot_no_tab_map = false
 
 -- open the LSP error in a floating window
-vim.keymap.set("n", "<leader>e", ":lua vim.diagnostic.open_float(0, {scope=\"line\"})<CR>")
+vim.keymap.set("n", "<F1>", ":lua vim.diagnostic.open_float(0, {scope=\"line\"})<CR>")
+-- vim.keymap.set("n", "<leader>e", ":lua vim.diagnostic.open_float(0, {scope=\"line\"})<CR>")
 
 -- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 -- vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
@@ -212,7 +213,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf }
         -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gD', vim.lsp.buf.definition, opts)
+        -- vim.keymap.set('n', 'gD', vim.lsp.buf.definition, opts)
+        vim.keymap.set('n', 'gD', ":vsplit | TSToolsGoToSourceDefinition<CR>", opts)
         vim.keymap.set('n', 'gd', "TSToolsGoToSourceDefinition", opts)
         -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
@@ -270,7 +272,7 @@ end, { noremap = true })
 
 -- compile shortcut
 vim.keymap.set("n", "<leader>cc",
-    ":!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
+    ":wa<CR>:!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
     { noremap = true, silent = true })
 
 vim.keymap.set("n", '<C-n>', function()
@@ -279,9 +281,10 @@ end, { noremap = false })
 vim.keymap.set("n", '<C-p>', function()
     require("illuminate").goto_prev_reference(true)
 end, { noremap = false })
-vim.keymap.set("n", '<C-s>', function()
-    require("illuminate").textobj_select()
-end, { noremap = false })
+
+-- vim.keymap.set("n", '<C-s>', function()
+--     require("illuminate").textobj_select()
+-- end, { noremap = false })
 
 vim.keymap.set("n", "<leader>cpu", "viwdipublic<ESC>", { noremap = true })
 vim.keymap.set("n", "<leader>cpr", "viwdiprivate<ESC>", { noremap = true })
@@ -528,4 +531,11 @@ vim.keymap.set("n", "<C-a>", "ggVG", { desc = "select entire file" })
 
 vim.keymap.set("n", "<leader>ma", ":<C-u>marks<CR>:normal! `", { desc = "list marks" })
 
+vim.keymap.set("n", '<C-s>', ":wa<CR>", { noremap = false , desc = "Save"})
+
+-- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
+vim.keymap.set("n", '<leader>cl', ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")', { noremap = false , desc = "eslint"})
+
+vim.keymap.set("n", '[q', ':cn<CR>', { desc = "Previous quickfix" })
+vim.keymap.set("n", ']q', ':cp<CR>', { desc = "Next quickfix" })
 
