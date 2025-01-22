@@ -45,15 +45,15 @@ return {
             local conds_expand = require("luasnip.extras.conditions.expand")
 
             ls.add_snippets("json", {
-                s("parallel", {
+                s("parallel (story)", {
                     t({ "{", "\"actionType\": \"Parallel\",", "\"actions\": [", ""}), i(1),
                     t({ "", "]", "}," }),
                 }),
-                s("serial", {
+                s("serial (story)", {
                     t({ "{", "\"actionType\": \"Serial\",", "\"actions\": [", ""}), i(1),
                     t({ "", "]", "}," }),
                 }),
-                s("ae", {
+                s("ae animation (story)", {
                     t({ "{", "\"actionType\": \"AfterEffectsAnimation\",", "\"afterEffectsAnimation\": \""}), i(1),
                     t({ "\",", "\"afterEffectsAnimationClass\": \"AnimationHelper\",", "\"modelDescriptor\": \""}), i(2),
                     t({ "\"", "}" }),
@@ -63,12 +63,12 @@ return {
                     t({ "\": \""}), i(2),
                     t({ "\",", "},"}),
                 }),
-                s("spine", {
+                s("spine animation (story)", {
                     t({ "{", "\"actionType\": \"SpineAnimation\",", "\"entityName\": \""}), i(1),
                     t({ "\",", "\"daemon\": true,", "\"animation\": \""}), i(2),
-                    t({ "\"", "}" }),
+                    t({ "\",", "\"repeats\": -1", "}" }),
                 }),
-                s("delay", {
+                s("delay (story)", {
                     t({ "{", "\"actionType\": \"Delay\",", "\"duration\": "}), i(1),
                     t({ "", "}" }),
                 }),
@@ -76,7 +76,29 @@ return {
                     t({ "\""}), i(1),
                     t({ "\": \""}), i(0),
                     t({ "\"," }),
-                })
+                }),
+                s("move animation (story)", {
+                    t({ "{", "\"actionType\": \"MoveAnimation\",", "\"entityName\": \""}), i(1),
+                    t({ "\",", "\"duration\": "}), i(2, "0.5"),
+                    t({ ",", "\"toX\": "}), i(3),
+                    t({ ",", "\"toY\": "}), i(4),
+                    t({ "", "}," }),
+                }),
+                s("scale animation (story)", {
+                    t({ "{", "\"actionType\": \"ScaleAnimation\",", "\"entityName\": \""}), i(1),
+                    t({ "\",", "\"duration\": "}), i(2, "0.5"),
+                    t({ ",", "\"targetScaleX\": "}), i(3, "1"),
+                    t({ ",", "\"targetScaleY\": "}), i(4, "1"),
+                    t({ "", "}," }),
+                }),
+                s("add entity (story)", {
+                    t({ "{", "\"actionType\": \"AddEntity\",", "\"entityName\": \""}), i(1),
+                    t({ "\",", "\"parent\": \""}), i(2, "root"),
+                    t({ "\",", "\"placement\": ", "{", "\"x\": "}), i(3, "100"),
+                    t({ ",", "\"y\": "}), i(4, "100"),
+                    t({ ",", "\"z\": "}), i(5, "1"),
+                    t({ "", "}", "}," }),
+                }),
             })
         end,
     }

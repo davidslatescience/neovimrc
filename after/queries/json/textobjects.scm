@@ -1,10 +1,13 @@
 ; extends
 
+(
+  (object) @object
+)
 
 ; object
 (
   (object) @_start @_start
-  (#make-range! "json_object" @_start @_start)
+  (#make-range! "json_object_old" @_start @_start)
 )
 
 ; value
@@ -26,4 +29,27 @@
   (pair key: (string (string_content) @json_key.inner) @json_key)
 )
 
+; assignment_lhs
+(
+  (pair key: (string (string_content) @assignment_lhs_inner) @assignment_lhs_outer)
+)
+
+; assignment_rhs
+([
+  (pair
+  	value: (string (string_content) @assignment_rhs_inner) @assignment_rhs)
+  (pair
+  	value: (number) @assignment_rhs @assignment_rhs_inner)
+    (pair
+  	value: (true) @assignment_rhs @assignment_rhs_inner)
+        (pair
+  	value: (false) @assignment_rhs @assignment_rhs_inner)
+]
+)
+
+; class_or_object_name
+(object
+  . (pair 
+    key: (string
+            (string_content) @class_or_object_name)))
 

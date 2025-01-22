@@ -27,7 +27,7 @@ return {
                 desc = "Search on current file"
             })
             vim.keymap.set('n', '<leader>sP', '<cmd>lua require("spectre").open({cwd=remove_prefix(vim.fn.expand("%:h"), "oil://")})<CR>', {
-                desc = "Search on current file"
+                desc = "Search on current file folder, or the folder displayed in oil"
             })
         end
     }

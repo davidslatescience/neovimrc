@@ -1,15 +1,21 @@
 ; extends
 
 ; Method name
+(method_signature
+  name: (property_identifier) @method_name)
 (method_definition
   name: (property_identifier) @method_name)
 
-; Method with docstring
+; Function call name
+(member_expression
+  property: (property_identifier) @function_call_name)
+
+; Method (including docstring)
 (
   (comment)? @_start
   .
   (method_definition) @_end
-  (#make-range! "method_with_optional_docstring" @_start @_end)
+  (#make-range! "method" @_start @_end)
 )
 
 ; Class constant
@@ -36,5 +42,41 @@
   (comment) @section_footer
   (#eq? @section_footer "//</editor-fold>")
 )
+
+; Types
+(type_annotation
+  (_) @type_identifier
+)
+
+; Assignment LHS
+(lexical_declaration
+  (variable_declarator 
+    name: (_) @assignment_lhs_inner
+  )
+) @assignment_lhs_outer
+(expression_statement
+  (assignment_expression 
+    left: (_) @assignment_lhs_inner
+  )
+) @assignment_lhs_outer
+
+; Assignment RHS
+(lexical_declaration
+  (variable_declarator 
+    value: (_) @assignment_rhs_inner @assignment_rhs_outer
+  )
+) 
+(expression_statement
+  (assignment_expression 
+    right: (_) @assignment_rhs_inner @assignment_rhs_outer
+  )
+)
+
+
+; Class or object name 
+(class_declaration
+  name: (type_identifier) @class_or_object_name)
+(interface_declaration
+  name: (type_identifier) @class_or_object_name)
 
 

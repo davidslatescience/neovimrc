@@ -42,17 +42,28 @@ return {
                     -- node_incremental = "<C-space>",
                     -- scope_incremental = false,
                     -- node_decremental = "<bs>",
-                    init_selection = "<A-Up>",
-                    node_incremental = "<A-Up>",
-                    scope_incremental = "`",
-                    node_decremental = "<A-Down>",
-                    -- init_selection = "<CR>",
-                    -- node_incremental = "<CR>",
+                    --
+                    -- init_selection = "<A-Up>",
+                    -- node_incremental = "<A-Up>",
                     -- scope_incremental = "`",
-                    -- node_decremental = "<bs>",
+                    -- node_decremental = "<A-Down>",
+                    init_selection = "<CR>",
+                    node_incremental = "<CR>",
+                    scope_incremental = "`",
+                    node_decremental = "<bs>",
                 },
             },
 
         })
+      if require("nvim-treesitter.parsers").has_parser "typescript" then
+        local folds_query = [[
+  [
+    (import_statement)+
+    (function_declaration)
+    (method_definition)
+  ] @fold
+  ]]
+        require("vim.treesitter.query").set("typescript", "folds", folds_query)
+      end
     end
 }

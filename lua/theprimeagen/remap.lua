@@ -15,14 +15,6 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
--- NOT NEEDED - Primeagen mappings for twitch
--- vim.keymap.set("n", "<leader>vwm", function()
---     require("vim-with-me").StartVimWithMe()
--- end)
--- vim.keymap.set("n", "<leader>svwm", function()
---     require("vim-with-me").StopVimWithMe()
--- end)
-
 -- paste without replacing text in buffer (pP would normally replace yank buffer)
 -- greatest remap ever
 vim.keymap.set("x", "<leader>p", [["_dP]])
@@ -30,22 +22,39 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 -- system clipboard yank
 -- can select a paragraph using a p and then paste to the system clip
 -- next greatest remap ever : asbjornHaland
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
+-- vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
+vim.keymap.set({ "n", "v" }, "<A-y>", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
+-- Command for copying the vim register to the system clipboard, and also to the 's' register
+function CopyFromSystemClipboard()
+    vim.cmd("let @\"=@+")
+    vim.cmd("let @s=@+")
+    print("Copied system clipboard to vim clipboard and 's' register")
+end
+function CopyToSystemClipboard()
+    vim.cmd("let @+=@\"")
+    vim.cmd("let @s=@\"")
+    print("Copied vim clipboard to system clipboard and 's' register")
+end
+function CustomSystemClipboardCopy()
+    print("Copy to system clipboard? (Y(es)/N(o)/C(ancel))")
+    -- vim.notify("Copy vim clipboard to system clipboard?\n (Y(es)/N(o)/C(ancel))")
+    local char = vim.fn.getcharstr()
+    if char == 'Y' or char == 'y' then
+        CopyToSystemClipboard()
+    elseif char == 'N' or char == 'n' then
+        CopyFromSystemClipboard()
+    else
+        print("Cancelled")
+    end
+end
+vim.keymap.set({ "n", "v" }, "<leader>y", CustomSystemClipboardCopy)
+-- vim.keymap.set("n", "<leader>Y", CopyToSystemClipboard)
 
 -- delete to void register - prevents overwrite of yank text
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
--- vertical edit mode C-c doesn't work correctly - need to press ESC, so remap it here so they work the same
--- This is going to get me cancelled
--- vim.keymap.set("i", "<C-c>", "<Esc>")
-
--- no operation
-vim.keymap.set("n", "Q", "<nop>")
-
--- switch projects with tmux, allows easy switching via tmux previous session
--- tmux shortcut - Ctrl a L
-vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
+-- Format the current buffer
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
 -- quickfix navigation
@@ -219,7 +228,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+        -- Cannot use gi because it is a built-in command
+        -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
         vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
         vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
         vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
@@ -270,11 +280,6 @@ end, { noremap = true })
 -- vim.keymap.set("n", "N", "/public\\|protected\\|private\\|function\\C<CR>", { noremap = false})
 -- vim.keymap.set("n", "M", "?public\\|protected\\|private\\|function\\C<CR>", { noremap = false})
 
--- compile shortcut
-vim.keymap.set("n", "<leader>cc",
-    ":wa<CR>:!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
-    { noremap = true, silent = true })
-
 vim.keymap.set("n", '<C-n>', function()
     require("illuminate").goto_next_reference(true)
 end, { noremap = false })
@@ -309,20 +314,25 @@ function FormatCode(file_path)
     -- get the file type
     local filetype = getFileType()
 
-    print("Formatting file: " .. file_path .. " with filetype: " .. filetype)
+    -- print("Formatting file: " .. file_path .. " with filetype: " .. filetype)
 
     local result = ""
 
     if filetype == 'json' then
-        local command = '!fixjson -w ' .. file_path .. ''
-        -- vim.cmd("!fixjson -w %<CR>")
+        -- local command = '!fixjson -w ' .. file_path .. ''
+        local command = '%!fixjson -w'
+
+        local cursorPosition = vim.api.nvim_win_get_cursor(0)
+        -- line('.') 
         vim.cmd(command)
 
+        vim.api.nvim_win_set_cursor(0, cursorPosition)
+
         -- reload the current buffer
-        vim.cmd("e")
+        -- vim.cmd("e")
 
         -- Print the output to the Neovim console
-        print(result)
+        -- print(result)
     elseif filetype == 'ts' then
         -- local a = require 'plenary.async'
         -- local tx, rx = a.control.channel.oneshot()
@@ -340,8 +350,7 @@ function FormatCode(file_path)
         --local ret = rx()
 
 
-        -- local Job = require 'plenary.job'
-        -- Job:new({
+        -- local Job = require 'plenary.job' Job:new({
         --     command = 'bash',
         --     args = { '-c', '~/bin/fmtfile.sh ' .. file_path .. ' 2>&1' },
         --     -- cwd = '/usr/bin',
@@ -384,10 +393,10 @@ function FormatCode(file_path)
         return
     end
 
-    -- Reload the current buffer
-    vim.cmd("checktime")
-    vim.cmd("redo")
-    vim.cmd("LspRestart")
+    -- -- Reload the current buffer
+    -- vim.cmd("checktime")
+    -- vim.cmd("redo")
+    -- vim.cmd("LspRestart")
 end
 
 vim.keymap.set("n", "<leader>ff", '<cmd>lua FormatCode(vim.fn.expand("%:p"))<CR>', { noremap = true })
@@ -531,11 +540,24 @@ vim.keymap.set("n", "<C-a>", "ggVG", { desc = "select entire file" })
 
 vim.keymap.set("n", "<leader>ma", ":<C-u>marks<CR>:normal! `", { desc = "list marks" })
 
-vim.keymap.set("n", '<C-s>', ":wa<CR>", { noremap = false , desc = "Save"})
+vim.keymap.set("n", '<C-s>', ":wa<CR>", { noremap = false, desc = "Save" })
 
 -- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
-vim.keymap.set("n", '<leader>cl', ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")', { noremap = false , desc = "eslint"})
+vim.keymap.set("n", '<leader>cl',
+    ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")',
+    { noremap = false, desc = "eslint" })
 
-vim.keymap.set("n", '[q', ':cn<CR>', { desc = "Previous quickfix" })
-vim.keymap.set("n", ']q', ':cp<CR>', { desc = "Next quickfix" })
+-- compile shortcut
+vim.keymap.set("n", "<leader>cc",
+    ":wa<CR>:!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
+    { noremap = true, silent = true })
+
+-- compile shortcut
+vim.keymap.set("n", "<leader>cd",
+    ":wa<CR>:compiler tsc<CR>:make<CR>",
+    -- ":wa<CR>:!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
+    { noremap = true, silent = true })
+
+vim.keymap.set("n", ']q', ':cn<CR>', { desc = "Previous quickfix" })
+vim.keymap.set("n", '[q', ':cp<CR>', { desc = "Next quickfix" })
 

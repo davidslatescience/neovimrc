@@ -3,7 +3,7 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 -- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
 -- vim.opt.foldtext = ""
 vim.opt.foldcolumn = "auto"
-vim.opt.foldlevel = 2
+vim.opt.foldlevel = 20
 function _G.MyFoldTextJson()
     total_lines = vim.v.foldend - vim.v.foldstart
     line = ""
@@ -17,3 +17,7 @@ end
 vim.opt.fillchars = "fold: "
 vim.opt.foldtext = 'v:lua.MyFoldTextJson()'
 
+vim.opt_local.tabstop = 2
+vim.opt_local.shiftwidth = 2
+vim.opt_local.softtabstop = 2
+vim.opt_local.expandtab = true

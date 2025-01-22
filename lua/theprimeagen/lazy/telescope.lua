@@ -74,7 +74,8 @@ return {
             builtin.buffers(
                 {
                     sort_mru = true,
-                    ignore_current_buffer = true
+                    ignore_current_buffer = true,
+                    show_all_buffers = true
                 })
         end, { noremap = true, silent = true })
         -- LSP References
@@ -130,17 +131,20 @@ return {
         vim.keymap.set('n', '<leader>kD', function() builtin.live_grep({ search_dirs = { vim.fn.expand("%:p:h") } }) end,
             { noremap = true, silent = true })
         -- vim.keymap.set('n', '<leader>ks', function() builtin.grep_string({ search = vim.fn.input("Grep > ") }) end)
-        -- vim.keymap.set('n', '<leader>ks',
-        --     function()
-        --         builtin.grep_string({
-        --             search_dirs = { vim.fn.expand("%:p") },
-        --             use_regex = true,
-        --             disable_coordinates = true,
-        --             search =
-        --             "^    //<editor-fold desc=",
-        --             only_sort_text = true
-        --         })
-        --     end)
+
+        -- View all section
+        vim.keymap.set('n', '<leader>kq',
+            function()
+                builtin.grep_string({
+                    search_dirs = { vim.fn.expand("%:p") },
+                    use_regex = true,
+                    disable_coordinates = true,
+                    search =
+                    "^    //<editor-fold desc=",
+                    only_sort_text = true
+                })
+            end)
+
         -- View all Actions
         vim.keymap.set('n', '<leader>ka',
             function()
@@ -173,11 +177,11 @@ return {
         -- <leader>ksd
         vim.keymap.set('n', '<leader>kss',
             function() builtin.find_files({ cwd =
-                "config/storyline/episode_variants/elgar_orthodontist_burnt_storyline/stories" }) end, {})
+                "config/storyline/episode_variants/restaurant_story_line/stories" }) end, {})
         vim.keymap.set('n', '<leader>ksc',
             function()
                 builtin.find_files({
-                    cwd = "config/storyline/episode_variants/elgar_orthodontist_burnt_storyline/conversation_configs" })
+                    cwd = "config/storyline/episode_variants/restaurant_story_line/conversation_configs" })
             end, {})
         vim.keymap.set('n', '<leader>ksd',
             function()

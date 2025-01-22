@@ -15,4 +15,3 @@ setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " setlocal commentstring=//%s
 
-

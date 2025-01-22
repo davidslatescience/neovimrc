@@ -67,7 +67,8 @@ return {
                 ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
                 --['<Space>'] = cmp.mapping.confirm({ select = true }),
                 --['<C-c>'] = cmp.mapping.confirm({ select = true }),
-                ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                ['<CR>'] = cmp.mapping.confirm({ select = true , behavior = cmp.ConfirmBehavior.Replace}),
+                ['<C-e>'] = cmp.mapping.abort(),
                 ["<C-Space>"] = cmp.mapping.complete(),
             }),
             sources = cmp.config.sources({
