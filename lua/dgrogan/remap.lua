@@ -185,7 +185,7 @@ vim.keymap.set("n", "<leader>ere", InsertRegionEnd)
 vim.keymap.set("n", "<leader>inf", "<cmd>e ~/Dev/SlateRoot/Infrastructure<CR>");
 vim.keymap.set("n", "<leader>rmd", "<cmd>e ~/Documents/cmds.txt<CR>");
 vim.keymap.set("n", "<leader>tod", "<cmd>e ~/Documents/todo.txt<CR>");
-vim.keymap.set("n", "<leader>rmp", "<cmd>e ~/.config/nvim/lua/theprimeagen/remap.lua<CR>");
+vim.keymap.set("n", "<leader>rmp", "<cmd>e ~/.config/nvim/lua/dgrogan/remap.lua<CR>");
 vim.keymap.set("n", "<leader>not", "<cmd>e ~/Documents/Projects/0002-OrthodontistDecimals/docs/notes.txt<CR>");
 vim.keymap.set("n", "<leader>inf", "<cmd>e ~/Dev/SlateRoot/Infrastructure<CR>");
 vim.keymap.set("n", "<leader>roo", "<cmd>e ~/<CR>");
