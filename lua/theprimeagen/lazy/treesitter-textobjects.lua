@@ -13,14 +13,16 @@ return {
                         -- You can use the capture groups defined in textobjects.scm
                         ["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment" },
                         ["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment" },
-                        ["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
+                        -- Can't enable this as it causes a short delay when moving right in visual mode
+                        -- ["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
                         ["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
                         --
                         ["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
                         ["ia"] = { query = "@parameter.inner", desc = "Select inner part of a parameter/argument" },
 
-                        -- ["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
-                        -- ["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
+                        ["ax"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
+                        ["ixs"] = { query = "@if_statement_condition_inner", desc = "Select inner part of a conditional" },
+                        ["ix"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
                         --
                         -- ["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
                         -- ["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
@@ -28,7 +30,6 @@ return {
                         ["af"] = { query = "@call.outer", desc = "Select outer part of a function call" },
                         ["if"] = { query = "@call.inner", desc = "Select inner part of a function call" },
 
-                        -- ["am"] = { query = "@function.outer", desc = "Select outer part of a method/function definition" },
                         ["am"] = { query = "@method", desc = "Select outer part of a method/function definition" },
                         ["im"] = { query = "@function.inner", desc = "Select inner part of a method/function definition" },
 
@@ -39,13 +40,16 @@ return {
                         -- ["aj"] = { query = "@object", desc = "Select outer part of object" },
                         ["aj"] = { query = "@object", desc = "Select outer part of object" },
                         ["r:"] = { query = "@json_value.inner", desc = "Select the json value" },
-                        ["l:"] = { query = "@json_key.inner", desc = "Select the json key" },
+                        -- Can't enable this as it causes a short delay when moving right in visual mode
+                        -- ["l:"] = { query = "@json_key.inner", desc = "Select the json key" },
 
                     },
                     include_surrounding_whitespace = false,
                     selection_modes = {
                         ['@object'] = 'V', -- linewise
                         ['@method'] = 'V', -- linewise
+                        ['@conditional.outer'] = 'V', -- linewise
+                        ['@conditional.inner'] = 'V', -- linewise
                     },
                 },
 
@@ -67,9 +71,8 @@ return {
 
                 move = {
                     enable = true,
-                    -- set_jumps = true,     -- whether to set jumps in the jumplist
+                    set_jumps = true,     -- whether to set jumps in the jumplist
                     goto_next_start = {
-
                         ["]f"] = { query = "@function_call_name", desc = "Next function call start" },
                         ["]m"] = { query = "@method_name", desc = "Next method/function def start" },
                         ["]p"] = { query = "@parameter.inner", desc = "Next parameter start" },
@@ -79,9 +82,12 @@ return {
                         ["]l"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["]r"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
                         ["]t"] = { query = "@type_identifier", desc = "Type identifier" },
+                        ["]xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
+                        ["]xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
+                        ["]b"] = { query = "@comment.outer", desc = "Comment" },
+
                     },
                     goto_next_end = {
-
                         ["]F"] = { query = "@call.outer", desc = "Next function call end" },
                         ["]M"] = { query = "@function.outer", desc = "Next method/function def end" },
                         ["]P"] = { query = "@parameter.inner", desc = "Next parameter end" },
@@ -90,9 +96,12 @@ return {
                         ["]L"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["]R"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
                         ["]T"] = { query = "@type_identifier", desc = "Type identifier" },
+                        ["]Xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
+                        ["]Xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
+                        ["]B"] = { query = "@comment.outer", desc = "Comment" },
+
                     },
                     goto_previous_start = {
-
                         ["[f"] = { query = "@function_call_name", desc = "Prev function call start" },
                         ["[m"] = { query = "@method_name", desc = "Prev method/function def start" },
                         ["[p"] = { query = "@parameter.inner", desc = "Prev parameter start" },
@@ -102,9 +111,12 @@ return {
                         ["[l"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["[r"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
                         ["[t"] = { query = "@type_identifier", desc = "Type identifier" },
+                        ["[xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
+                        ["[xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
+                        ["[b"] = { query = "@comment.outer", desc = "Comment" },
+
                     },
                     goto_previous_end = {
-
                         ["[F"] = { query = "@call.outer", desc = "Prev function call end" },
                         ["[M"] = { query = "@function.outer", desc = "Prev method/function def end" },
                         ["[P"] = { query = "@parameter.inner", desc = "Prev parameter start" },
@@ -113,6 +125,10 @@ return {
                         ["[L"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["[R"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
                         ["[T"] = { query = "@type_identifier", desc = "Type identifier" },
+                        ["[Xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
+                        ["[Xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
+                        ["[B"] = { query = "@comment.outer", desc = "Comment" },
+
                     },
                 },
             },

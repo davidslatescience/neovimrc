@@ -47,6 +47,10 @@
 (type_annotation
   (_) @type_identifier
 )
+(type_identifier) @type_identifier
+(predefined_type) @type_identifier
+(extends_clause
+  value: (_) @type_identifier)
 
 ; Assignment LHS
 (lexical_declaration
@@ -59,6 +63,10 @@
     left: (_) @assignment_lhs_inner
   )
 ) @assignment_lhs_outer
+(public_field_definition
+    name: (_) @assignment_lhs_inner
+) @assignment_lhs_outer
+
 
 ; Assignment RHS
 (lexical_declaration
@@ -71,6 +79,9 @@
     right: (_) @assignment_rhs_inner @assignment_rhs_outer
   )
 )
+(public_field_definition
+    value: (_) @assignment_rhs_inner
+) @assignment_rhs_outer
 
 
 ; Class or object name 
@@ -79,4 +90,8 @@
 (interface_declaration
   name: (type_identifier) @class_or_object_name)
 
+
+; If statement condition (within the parenthesized expression)
+(if_statement 
+  condition: (parenthesized_expression (_) @if_statement_condition_inner) @if_statement_condition_outer)
 

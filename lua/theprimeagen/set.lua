@@ -37,6 +37,12 @@ vim.opt.colorcolumn = "120"
 -- error formats for eslint
 vim.opt.errorformat = {'%f: line %l\\, col %c\\, %trror - %m', '%f: line %l\\, col %c\\, %tarning - %m'}
 
+-- cursor will move up and down vertically in the same column
+vim.opt.virtualedit = "all"
+
+-- show the column the cursor is on
+vim.opt.cursorcolumn = true
+
 -- vim.opt.foldmethod = "expr"
 -- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 -- -- vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"

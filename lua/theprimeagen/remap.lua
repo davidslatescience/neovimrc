@@ -309,94 +309,36 @@ local function getFileType()
 
     return filetype_map[ext] or "default"
 end
--- Define the Lua function
+
+-- custom formatting
 function FormatCode(file_path)
     -- get the file type
     local filetype = getFileType()
 
     -- print("Formatting file: " .. file_path .. " with filetype: " .. filetype)
 
-    local result = ""
-
     if filetype == 'json' then
-        -- local command = '!fixjson -w ' .. file_path .. ''
         local command = '%!fixjson -w'
-
         local cursorPosition = vim.api.nvim_win_get_cursor(0)
-        -- line('.') 
+        vim.cmd("mkview") -- save folds 
         vim.cmd(command)
-
+        vim.cmd("loadview") -- load folds
         vim.api.nvim_win_set_cursor(0, cursorPosition)
-
-        -- reload the current buffer
-        -- vim.cmd("e")
-
-        -- Print the output to the Neovim console
-        -- print(result)
     elseif filetype == 'ts' then
-        -- local a = require 'plenary.async'
-        -- local tx, rx = a.control.channel.oneshot()
-        --
-        -- a.run(function()
-        --     local command = 'bash ~/bin/fmtfile.sh ' .. file_path .. ' 2>&1'
-        --     local handle = io.popen(command)
-        --     local result = handle:read('*a')
-        --     handle:close()
-        --
-        --     --local ret = long_running_fn()
-        --     tx(result)
-        -- end)
-
-        --local ret = rx()
-
-
-        -- local Job = require 'plenary.job' Job:new({
-        --     command = 'bash',
-        --     args = { '-c', '~/bin/fmtfile.sh ' .. file_path .. ' 2>&1' },
-        --     -- cwd = '/usr/bin',
-        --     -- env = { ['a'] = 'b' },
-        --     on_exit = function(j, return_val)
-        --         -- vim.api.nvim_command('checktime')
-        --         -- checktime()
-        --         -- vim.checktime()
-        --         -- vim.cmd("e")
-        --         print(return_val)
-        --         print(j:result())
-        --     end,
-        -- -- }):sync() -- or start()
-        -- }):sync() -- or start()
-
-        -- vim.api. u
-        -- vim.cmd("checktime")
-        -- vim.cmd("redo")
-
-        -- vim.cmd("e!")
-        -- vim.api.nvim_command('checktime')
-        -- local function on_done()
-        -- end
-        -- vim.api.nvim_create_autocmd("'bash ~/bin/fmtfile.sh ' .. file_path .. ' 2>&1'", { callback = on_done })
-
         -- Execute the Bash script synchronously and capture its output
         -- local command = 'bash ~/bin/fmt.sh 2>&1'
+        -- save any folds
+        vim.cmd("mkview")
         local command = 'bash ~/bin/fmtfile.sh ' .. file_path .. ' 2>&1'
         local handle = io.popen(command)
         local result = handle:read('*a')
         handle:close()
-        -- reload the current buffer
-        -- vim.wait(2000, function() end)
-        -- vim.cmd("e")
-
         -- Print the output to the Neovim console
         print(result)
     else
         print('FileType not supported. Exiting...')
         return
     end
-
-    -- -- Reload the current buffer
-    -- vim.cmd("checktime")
-    -- vim.cmd("redo")
-    -- vim.cmd("LspRestart")
 end
 
 vim.keymap.set("n", "<leader>ff", '<cmd>lua FormatCode(vim.fn.expand("%:p"))<CR>', { noremap = true })
@@ -561,3 +503,13 @@ vim.keymap.set("n", "<leader>cd",
 vim.keymap.set("n", ']q', ':cn<CR>', { desc = "Previous quickfix" })
 vim.keymap.set("n", '[q', ':cp<CR>', { desc = "Next quickfix" })
 
+ vim.api.nvim_create_autocmd({"BufWinLeave"}, {
+  pattern = {"*.*"},
+  desc = "save view (folds), when closing file",
+  command = "mkview",
+})
+vim.api.nvim_create_autocmd({"BufWinEnter"}, {
+  pattern = {"*.*"},
+  desc = "load view (folds), when opening file",
+  command = "silent! loadview"
+})

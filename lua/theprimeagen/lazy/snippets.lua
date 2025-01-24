@@ -46,59 +46,72 @@ return {
 
             ls.add_snippets("json", {
                 s("parallel (story)", {
-                    t({ "{", "\"actionType\": \"Parallel\",", "\"actions\": [", ""}), i(1),
+                    t({ "{", "\"actionType\": \"Parallel\",", "\"actions\": [", "" }), i(1),
                     t({ "", "]", "}," }),
                 }),
                 s("serial (story)", {
-                    t({ "{", "\"actionType\": \"Serial\",", "\"actions\": [", ""}), i(1),
+                    t({ "{", "\"actionType\": \"Serial\",", "\"actions\": [", "" }), i(1),
                     t({ "", "]", "}," }),
                 }),
                 s("ae animation (story)", {
-                    t({ "{", "\"actionType\": \"AfterEffectsAnimation\",", "\"afterEffectsAnimation\": \""}), i(1),
-                    t({ "\",", "\"afterEffectsAnimationClass\": \"AnimationHelper\",", "\"modelDescriptor\": \""}), i(2),
+                    t({ "{", "\"actionType\": \"AfterEffectsAnimation\",", "\"afterEffectsAnimation\": \"" }), i(1),
+                    t({ "\",", "\"afterEffectsAnimationClass\": \"AnimationHelper\",", "\"modelDescriptor\": \"" }), i(2),
                     t({ "\"", "}" }),
                 }),
                 s("obj", {
-                    t({ "{", "\""}), i(1),
-                    t({ "\": \""}), i(2),
-                    t({ "\",", "},"}),
+                    t({ "{", "\"" }), i(1),
+                    t({ "\": \"" }), i(2),
+                    t({ "\",", "}," }),
                 }),
                 s("spine animation (story)", {
-                    t({ "{", "\"actionType\": \"SpineAnimation\",", "\"entityName\": \""}), i(1),
-                    t({ "\",", "\"daemon\": true,", "\"animation\": \""}), i(2),
+                    t({ "{", "\"actionType\": \"SpineAnimation\",", "\"entityName\": \"" }), i(1),
+                    t({ "\",", "\"daemon\": true,", "\"animation\": \"" }), i(2),
                     t({ "\",", "\"repeats\": -1", "}" }),
                 }),
                 s("delay (story)", {
-                    t({ "{", "\"actionType\": \"Delay\",", "\"duration\": "}), i(1),
+                    t({ "{", "\"actionType\": \"Delay\",", "\"duration\": " }), i(1),
                     t({ "", "}" }),
                 }),
                 s("key", {
-                    t({ "\""}), i(1),
-                    t({ "\": \""}), i(0),
+                    t({ "\"" }), i(1),
+                    t({ "\": \"" }), i(0),
                     t({ "\"," }),
                 }),
                 s("move animation (story)", {
-                    t({ "{", "\"actionType\": \"MoveAnimation\",", "\"entityName\": \""}), i(1),
-                    t({ "\",", "\"duration\": "}), i(2, "0.5"),
-                    t({ ",", "\"toX\": "}), i(3),
-                    t({ ",", "\"toY\": "}), i(4),
+                    t({ "{", "\"actionType\": \"MoveAnimation\",", "\"entityName\": \"" }), i(1),
+                    t({ "\",", "\"duration\": " }), i(2, "0.5"),
+                    t({ ",", "\"toX\": " }), i(3),
+                    t({ ",", "\"toY\": " }), i(4),
                     t({ "", "}," }),
                 }),
                 s("scale animation (story)", {
-                    t({ "{", "\"actionType\": \"ScaleAnimation\",", "\"entityName\": \""}), i(1),
-                    t({ "\",", "\"duration\": "}), i(2, "0.5"),
-                    t({ ",", "\"targetScaleX\": "}), i(3, "1"),
-                    t({ ",", "\"targetScaleY\": "}), i(4, "1"),
+                    t({ "{", "\"actionType\": \"ScaleAnimation\",", "\"entityName\": \"" }), i(1),
+                    t({ "\",", "\"duration\": " }), i(2, "0.5"),
+                    t({ ",", "\"targetScaleX\": " }), i(3, "1"),
+                    t({ ",", "\"targetScaleY\": " }), i(4, "1"),
                     t({ "", "}," }),
                 }),
                 s("add entity (story)", {
-                    t({ "{", "\"actionType\": \"AddEntity\",", "\"entityName\": \""}), i(1),
-                    t({ "\",", "\"parent\": \""}), i(2, "root"),
-                    t({ "\",", "\"placement\": ", "{", "\"x\": "}), i(3, "100"),
-                    t({ ",", "\"y\": "}), i(4, "100"),
-                    t({ ",", "\"z\": "}), i(5, "1"),
+                    t({ "{", "\"actionType\": \"AddEntity\",", "\"entityName\": \"" }), i(1),
+                    t({ "\",", "\"parent\": \"" }), i(2, "root"),
+                    t({ "\",", "\"placement\": ", "{", "\"x\": " }), i(3, "100"),
+                    t({ ",", "\"y\": " }), i(4, "100"),
+                    t({ ",", "\"z\": " }), i(5, "1"),
                     t({ "", "}", "}," }),
                 }),
+            })
+            ls.add_snippets("typescript", {
+                s("add precondition (Not Nullish)", fmt([[
+        //<editor-fold desc="Preconditions" defaultstate="collapsed">
+        Precondition.requireNotNullish({value}, "{value} must not be nullish.");
+        //</editor-fold>
+                ]], {
+                        value = i(1, "value"),
+                    },
+                    {
+                        repeat_duplicates = true
+                    }
+                )),
             })
         end,
     }
