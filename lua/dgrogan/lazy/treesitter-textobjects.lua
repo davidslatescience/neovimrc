@@ -6,30 +6,32 @@ return {
             textobjects = {
                 select = {
                     enable = true,
-
-                    -- Automatically jump forward to textobj, similar to targets.vim
                     lookahead = true,
                     keymaps = {
-                        -- You can use the capture groups defined in textobjects.scm
                         ["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment" },
                         ["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment" },
                         -- Can't enable this as it causes a short delay when moving right in visual mode
                         -- ["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
-                        ["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
-                        --
+                        -- ["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
+
+                        -- Parameters
                         ["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
                         ["ia"] = { query = "@parameter.inner", desc = "Select inner part of a parameter/argument" },
 
+                        -- Conditionals
                         ["ax"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
                         ["ixs"] = { query = "@if_statement_condition_inner", desc = "Select inner part of a conditional" },
                         ["ix"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
-                        --
+
+                        -- Loops
                         -- ["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
                         -- ["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
 
+                        -- Function calls
                         ["af"] = { query = "@call.outer", desc = "Select outer part of a function call" },
                         ["if"] = { query = "@call.inner", desc = "Select inner part of a function call" },
 
+                        -- Method definitions
                         ["am"] = { query = "@method", desc = "Select outer part of a method/function definition" },
                         ["im"] = { query = "@function.inner", desc = "Select inner part of a method/function definition" },
 
@@ -42,6 +44,9 @@ return {
                         ["r:"] = { query = "@json_value.inner", desc = "Select the json value" },
                         -- Can't enable this as it causes a short delay when moving right in visual mode
                         -- ["l:"] = { query = "@json_key.inner", desc = "Select the json key" },
+
+                        ["ab"] = { query = "@block.outer", desc = "Block outer" },
+                        ["ib"] = { query = "@block.inner", desc = "Block inner" },
 
                     },
                     include_surrounding_whitespace = false,
@@ -72,62 +77,152 @@ return {
                 move = {
                     enable = true,
                     set_jumps = true,     -- whether to set jumps in the jumplist
+                    -- Already mapped
+                    -- ]c cnext
+                    -- ]d next diagnostic
+                    -- ]<space> insert line below
+                    -- ]i lookup identifier under cursor
+
                     goto_next_start = {
-                        ["]f"] = { query = "@function_call_name", desc = "Next function call start" },
-                        ["]m"] = { query = "@method_name", desc = "Next method/function def start" },
-                        ["]p"] = { query = "@parameter.inner", desc = "Next parameter start" },
-                        ["]j"] = { query = "@class_or_object_name", desc = "Next class name start" },
-                        ["]s"] = { query = "@section_header_fold", desc = "Next scope" },
-                        ["]k"] = { query = "@class_constant_name", desc = "Next class constant" },
+                        -- Class definitions
+                        -- TODO: j should be just for objects, classes should be different
+                        ["]j"] = { query = "@class_or_object_name", desc = "Class or object start" },
+                        -- Class constants
+                        ["]k"] = { query = "@class_constant_name", desc = "Class constant" },
+                        -- Method definitions
+                        ["]m"] = { query = "@method_name", desc = "Method/function definition" },
+                        -- Parameters
+                        ["]p"] = { query = "@parameter.inner", desc = "Parameter inner" },
+                        -- Function calls
+                        ["]fcn"] = { query = "@function_call_name", desc = "Function call name" },
+                        ["]fco"] = { query = "@call.outer", desc = "Function call outer" },
+                        ["]fci"] = { query = "@call.inner", desc = "Function call inner" },
+                        -- Types
+                        ["]t"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Assignments
                         ["]l"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["]r"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
-                        ["]t"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Folds
+                        ["]fs"] = { query = "@section_header_fold", desc = "Fold section header" },
+                        -- Statements
+                        ["]bs"] = { query = "@statement_block_start", desc = "Statement block start" },
+                        ["]bi"] = { query = "@block.inner", desc = "Statement block inner" },
+                        ["]bo"] = { query = "@block.outer", desc = "Statement block outer" },
+                        -- Conditionals
                         ["]xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
                         ["]xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
-                        ["]b"] = { query = "@comment.outer", desc = "Comment" },
+                        -- Comments
+                        ["]bci"] = { query = "@comment_inner", desc = "Comment inner" },
+                        ["]bco"] = { query = "@comment.outer", desc = "Comment outer" },
+                        -- Variables
+                        ["]v"] = { query = "@variable_outer", desc = "Variable (identifier) outer" },
 
                     },
                     goto_next_end = {
-                        ["]F"] = { query = "@call.outer", desc = "Next function call end" },
-                        ["]M"] = { query = "@function.outer", desc = "Next method/function def end" },
-                        ["]P"] = { query = "@parameter.inner", desc = "Next parameter end" },
-                        ["]S"] = { query = "@section_footer", desc = "Next scope end" },
-                        ["]J"] = { query = "@class_or_object_name", desc = "Next class name end" },
+                        -- Class definitions
+                        -- TODO: j should be just for objects, classes should be different
+                        ["]J"] = { query = "@class_or_object_name", desc = "Class or object start" },
+                        -- Class constants
+                        ["]K"] = { query = "@class_constant_name", desc = "Class constant" },
+                        -- Method definitions
+                        ["]M"] = { query = "@function.outer", desc = "Method/function definition" },
+                        ["]Nm"] = { query = "@method_name", desc = "Method/function name" },
+                        -- Parameters
+                        ["]P"] = { query = "@parameter.inner", desc = "Parameter inner" },
+                        -- Function calls
+                        ["]Fcn"] = { query = "@function_call_name", desc = "Function call name" },
+                        ["]Fco"] = { query = "@call.outer", desc = "Function call outer" },
+                        ["]Fci"] = { query = "@call.inner", desc = "Function call inner" },
+                        -- Types
+                        ["]T"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Assignments
                         ["]L"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["]R"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
-                        ["]T"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Folds
+                        ["]Fs"] = { query = "@section_footer", desc = "Fold section header" },
+                        -- Statements
+                        ["]Bs"] = { query = "@statement_block_start", desc = "Statement block start" },
+                        ["]Bi"] = { query = "@block.inner", desc = "Statement block inner" },
+                        ["]Bo"] = { query = "@block.outer", desc = "Statement block outer" },
+                        -- Conditionals
                         ["]Xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
                         ["]Xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
-                        ["]B"] = { query = "@comment.outer", desc = "Comment" },
+                        -- Comments
+                        ["]Bci"] = { query = "@comment_inner", desc = "Comment inner" },
+                        ["]Bco"] = { query = "@comment.outer", desc = "Comment outer" },
+                        -- Variables
+                        ["]V"] = { query = "@variable_outer", desc = "Variable (identifier) outer" },
 
                     },
                     goto_previous_start = {
-                        ["[f"] = { query = "@function_call_name", desc = "Prev function call start" },
-                        ["[m"] = { query = "@method_name", desc = "Prev method/function def start" },
-                        ["[p"] = { query = "@parameter.inner", desc = "Prev parameter start" },
-                        ["[s"] = { query = "@section_header_fold", desc = "Prev scope" },
-                        ["[k"] = { query = "@class_constant_name", desc = "Prev class constant" },
-                        ["[j"] = { query = "@class_or_object_name", desc = "Prev class name start" },
+                        -- Class definitions
+                        -- TODO: j should be just for objects, classes should be different
+                        ["[j"] = { query = "@class_or_object_name", desc = "Class or object start" },
+                        -- Class constants
+                        ["[k"] = { query = "@class_constant_name", desc = "Class constant" },
+                        -- Method definitions
+                        ["[m"] = { query = "@method_name", desc = "Method/function definition" },
+                        -- Parameters
+                        ["[p"] = { query = "@parameter.inner", desc = "Parameter inner" },
+                        -- Function calls
+                        ["[fcn"] = { query = "@function_call_name", desc = "Function call name" },
+                        ["[fco"] = { query = "@call.outer", desc = "Function call outer" },
+                        ["[fci"] = { query = "@call.inner", desc = "Function call inner" },
+                        -- Types
+                        ["[t"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Assignments
                         ["[l"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["[r"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
-                        ["[t"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Folds
+                        ["[fs"] = { query = "@section_header_fold", desc = "Fold section header" },
+                        -- Statements
+                        ["[bs"] = { query = "@statement_block_start", desc = "Statement block start" },
+                        ["[bi"] = { query = "@block.inner", desc = "Statement block inner" },
+                        ["[bo"] = { query = "@block.outer", desc = "Statement block outer" },
+                        -- Conditionals
                         ["[xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
                         ["[xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
-                        ["[b"] = { query = "@comment.outer", desc = "Comment" },
+                        -- Comments
+                        ["[bci"] = { query = "@comment_inner", desc = "Comment inner" },
+                        ["[bco"] = { query = "@comment.outer", desc = "Comment outer" },
+                        -- Variables
+                        ["[v"] = { query = "@variable_outer", desc = "Variable (identifier) outer" },
 
                     },
                     goto_previous_end = {
-                        ["[F"] = { query = "@call.outer", desc = "Prev function call end" },
-                        ["[M"] = { query = "@function.outer", desc = "Prev method/function def end" },
-                        ["[P"] = { query = "@parameter.inner", desc = "Prev parameter start" },
-                        ["[S"] = { query = "@section_footer", desc = "Prev scope end" },
-                        ["[J"] = { query = "@class_or_object_name", desc = "Prev class name end" },
+                        -- Class definitions
+                        -- TODO: j should be just for objects, classes should be different
+                        ["[J"] = { query = "@class_or_object_name", desc = "Class or object start" },
+                        -- Class constants
+                        ["[K"] = { query = "@class_constant_name", desc = "Class constant" },
+                        -- Method definitions
+                        ["[M"] = { query = "@function.outer", desc = "Method/function definition" },
+                        ["[Nm"] = { query = "@method_name", desc = "Method/function name" },
+                        -- Parameters
+                        ["[P"] = { query = "@parameter.inner", desc = "Parameter inner" },
+                        -- Function calls
+                        ["[Fcn"] = { query = "@function_call_name", desc = "Function call name" },
+                        ["[Fco"] = { query = "@call.outer", desc = "Function call outer" },
+                        ["[Fci"] = { query = "@call.inner", desc = "Function call inner" },
+                        -- Types
+                        ["[T"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Assignments
                         ["[L"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["[R"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
-                        ["[T"] = { query = "@type_identifier", desc = "Type identifier" },
+                        -- Folds
+                        ["[Fs"] = { query = "@section_footer", desc = "Fold section header" },
+                        -- Statements
+                        ["[Bs"] = { query = "@statement_block_start", desc = "Statement block start" },
+                        ["[Bi"] = { query = "@block.inner", desc = "Statement block inner" },
+                        ["[Bo"] = { query = "@block.outer", desc = "Statement block outer" },
+                        -- Conditionals
                         ["[Xs"] = { query = "@if_statement_condition_inner", desc = "Conditional statement" },
                         ["[Xi"] = { query = "@conditional.inner", desc = "Conditional statement block inner" },
-                        ["[B"] = { query = "@comment.outer", desc = "Comment" },
+                        -- Comments
+                        ["[Bci"] = { query = "@comment_inner", desc = "Comment inner" },
+                        ["[Bco"] = { query = "@comment.outer", desc = "Comment outer" },
+                        -- Variables
+                        ["[V"] = { query = "@variable_outer", desc = "Variable (identifier) outer" },
 
                     },
                 },

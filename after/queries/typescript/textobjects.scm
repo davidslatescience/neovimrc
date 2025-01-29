@@ -6,10 +6,6 @@
 (method_definition
   name: (property_identifier) @method_name)
 
-; Function call name
-(member_expression
-  property: (property_identifier) @function_call_name)
-
 ; Method (including docstring)
 (
   (comment)? @_start
@@ -17,6 +13,10 @@
   (method_definition) @_end
   (#make-range! "method" @_start @_end)
 )
+
+; Function call name
+(member_expression
+  property: (property_identifier) @function_call_name)
 
 ; Class constant
 (
@@ -60,7 +60,13 @@
 ) @assignment_lhs_outer
 (expression_statement
   (assignment_expression 
-    left: (_) @assignment_lhs_inner
+    left: (member_expression
+           property: (property_identifier) @assignment_lhs_inner) 
+  )
+) @assignment_lhs_outer
+(expression_statement
+  (assignment_expression 
+    left: (identifier) @assignment_lhs_inner 
   )
 ) @assignment_lhs_outer
 (public_field_definition
@@ -83,15 +89,25 @@
     value: (_) @assignment_rhs_inner
 ) @assignment_rhs_outer
 
-
 ; Class or object name 
 (class_declaration
   name: (type_identifier) @class_or_object_name)
 (interface_declaration
   name: (type_identifier) @class_or_object_name)
 
-
 ; If statement condition (within the parenthesized expression)
 (if_statement 
   condition: (parenthesized_expression (_) @if_statement_condition_inner) @if_statement_condition_outer)
 
+; Statement block
+(statement_block . (_) @statement_block_start)
+
+; Comments
+(comment) @comment_inner
+; It looks like the inner nodes of a comment aren't available, even though they are there when using :InspectTree
+; (
+;  (comment
+;  (_)) @comment_inner)
+
+; Variables
+(identifier) @variable_outer

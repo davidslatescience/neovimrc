@@ -76,7 +76,9 @@ vim.keymap.set(
     "n",
     "<leader>ee",
     -- "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
-    "O/**<CR> * [TODO]<CR>*/<ESC>?\\[TODO\\]<CR>gn"
+    -- "O/**\n     * [TODO]\n     */<ESC>?\\[TODO\\]<CR>gn"
+    "O/**\n<ESC>0i     * [TODO]\n<ESC>0i     */<ESC>?\\[TODO\\]<CR>gn"
+
 )
 -- skeleton for inserting quick text
 -- vim.keymap.set(

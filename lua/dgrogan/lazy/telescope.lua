@@ -132,7 +132,7 @@ return {
             { noremap = true, silent = true })
         -- vim.keymap.set('n', '<leader>ks', function() builtin.grep_string({ search = vim.fn.input("Grep > ") }) end)
 
-        -- View all section
+        -- View all sections
         vim.keymap.set('n', '<leader>kq',
             function()
                 builtin.grep_string({
