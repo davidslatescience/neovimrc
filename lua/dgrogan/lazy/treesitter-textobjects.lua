@@ -13,6 +13,8 @@ return {
                         -- Can't enable this as it causes a short delay when moving right in visual mode
                         -- ["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
                         -- ["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
+                        ["al"] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
+                        ["ar"] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
 
                         -- Parameters
                         ["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
@@ -35,8 +37,10 @@ return {
                         ["am"] = { query = "@method", desc = "Select outer part of a method/function definition" },
                         ["im"] = { query = "@function.inner", desc = "Select inner part of a method/function definition" },
 
-                        ["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
-                        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
+                        ["ac"] = { query = "@comment.outer", desc = "Select outer part of a comment" },
+                        ["ic"] = { query = "@comment.inner", desc = "Select inner part of a comment" },
+                        -- ["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
+                        -- ["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
 
                         ["ak"] = { query = "@class_constant", desc = "Select outer part of class constant" },
                         -- ["aj"] = { query = "@object", desc = "Select outer part of object" },
@@ -82,6 +86,7 @@ return {
                     -- ]d next diagnostic
                     -- ]<space> insert line below
                     -- ]i lookup identifier under cursor
+                    -- ]e exchange below (from unimpaired)
 
                     goto_next_start = {
                         -- Class definitions

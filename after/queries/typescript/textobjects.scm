@@ -72,6 +72,9 @@
 (public_field_definition
     name: (_) @assignment_lhs_inner
 ) @assignment_lhs_outer
+(enum_assignment
+    name: (_) @assignment_lhs_inner
+) @assignment_lhs_outer
 
 
 ; Assignment RHS
@@ -86,6 +89,9 @@
   )
 )
 (public_field_definition
+    value: (_) @assignment_rhs_inner
+) @assignment_rhs_outer
+(enum_assignment
     value: (_) @assignment_rhs_inner
 ) @assignment_rhs_outer
 
@@ -111,3 +117,4 @@
 
 ; Variables
 (identifier) @variable_outer
+(property_identifier) @variable_outer

@@ -31,11 +31,13 @@ function CopyFromSystemClipboard()
     vim.cmd("let @s=@+")
     print("Copied system clipboard to vim clipboard and 's' register")
 end
+
 function CopyToSystemClipboard()
     vim.cmd("let @+=@\"")
     vim.cmd("let @s=@\"")
     print("Copied vim clipboard to system clipboard and 's' register")
 end
+
 function CustomSystemClipboardCopy()
     print("Copy to system clipboard? (Y(es)/N(o)/C(ancel))")
     -- vim.notify("Copy vim clipboard to system clipboard?\n (Y(es)/N(o)/C(ancel))")
@@ -48,6 +50,7 @@ function CustomSystemClipboardCopy()
         print("Cancelled")
     end
 end
+
 vim.keymap.set({ "n", "v" }, "<leader>y", CustomSystemClipboardCopy)
 -- vim.keymap.set("n", "<leader>Y", CopyToSystemClipboard)
 
@@ -322,7 +325,7 @@ function FormatCode(file_path)
     if filetype == 'json' then
         local command = '%!fixjson -w'
         local cursorPosition = vim.api.nvim_win_get_cursor(0)
-        vim.cmd("mkview") -- save folds 
+        vim.cmd("mkview")   -- save folds
         vim.cmd(command)
         vim.cmd("loadview") -- load folds
         vim.api.nvim_win_set_cursor(0, cursorPosition)
@@ -505,13 +508,41 @@ vim.keymap.set("n", "<leader>cd",
 vim.keymap.set("n", ']q', ':cn<CR>', { desc = "Previous quickfix" })
 vim.keymap.set("n", '[q', ':cp<CR>', { desc = "Next quickfix" })
 
- vim.api.nvim_create_autocmd({"BufWinLeave"}, {
-  pattern = {"*.*"},
-  desc = "save view (folds), when closing file",
-  command = "mkview",
+vim.api.nvim_create_autocmd({ "BufWinLeave" }, {
+    pattern = { "*.*" },
+    desc = "save view (folds), when closing file",
+    command = "mkview",
 })
-vim.api.nvim_create_autocmd({"BufWinEnter"}, {
-  pattern = {"*.*"},
-  desc = "load view (folds), when opening file",
-  command = "silent! loadview"
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+    pattern = { "*.*" },
+    desc = "load view (folds), when opening file",
+    command = "silent! loadview"
 })
+
+DeleteLineBelowCursor = function()
+    _G.DeleteLineBelowCursor_callback = function()
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        vim.api.nvim_buf_set_lines(0, row, row + 1, false, {})
+        vim.api.nvim_win_set_cursor(0, { row, col })
+    end
+    vim.go.operatorfunc = 'v:lua.DeleteLineBelowCursor_callback'
+    vim.api.nvim_feedkeys('g@l', 'n', false)
+end
+
+DeleteLineAboveCursor = function()
+    _G.DeleteLineAboveCursor_callback = function()
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        if row > 1 then
+            vim.api.nvim_buf_set_lines(0, row - 2, row - 1, false, {})
+            vim.api.nvim_win_set_cursor(0, { row - 1, col })
+        else
+            print("Cannot delete the first line")
+        end
+    end
+    vim.go.operatorfunc = 'v:lua.DeleteLineAboveCursor_callback'
+    vim.api.nvim_feedkeys('g@l', 'n', false)
+end
+
+-- Delete line above/below cursor without moving the cursor (also dot repeatable)
+vim.keymap.set("n", '[<del>', DeleteLineAboveCursor, { noremap = true, silent = true })
+vim.keymap.set("n", ']<del>', DeleteLineBelowCursor, { noremap = true, silent = true })
