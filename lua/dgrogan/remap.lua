@@ -546,3 +546,7 @@ end
 -- Delete line above/below cursor without moving the cursor (also dot repeatable)
 vim.keymap.set("n", '[<del>', DeleteLineAboveCursor, { noremap = true, silent = true })
 vim.keymap.set("n", ']<del>', DeleteLineBelowCursor, { noremap = true, silent = true })
+
+-- Add a space under the cursor in normal mode
+vim.keymap.set("n", '<M-Space>', [[i <esc>i]], { noremap = true, silent = true })
+-- vim.keymap.set("n", "<leader>Y", [["+Y]])

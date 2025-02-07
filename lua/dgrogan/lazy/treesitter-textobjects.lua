@@ -59,6 +59,8 @@ return {
                         ['@method'] = 'V', -- linewise
                         ['@conditional.outer'] = 'V', -- linewise
                         ['@conditional.inner'] = 'V', -- linewise
+                        ['@comment.inner'] = 'V', -- linewise
+                        ['@comment.outer'] = 'V', -- linewise
                     },
                 },
 
