@@ -69,7 +69,7 @@ vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 -- vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 -- global replace the word that is currently under cursor
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<leader>s", [[:%s/\<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- makes a file executable
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
@@ -474,6 +474,44 @@ end
 
 vim.keymap.set("n", "<leader>in", '<cmd>lua find_file_and_compute_relative_path()<CR>', { noremap = true })
 
+local function insert_file_at_cursor_position(file_path)
+    local module_name = extract_filename_without_extension(file_path)
+    module_name = remove_trailing_d(module_name)
+    -- Save current cursor position
+    local cursor = vim.api.nvim_win_get_cursor(0)
+
+    local pos = vim.api.nvim_win_get_cursor(0)[2]
+    local line = vim.api.nvim_get_current_line()
+    local nline = line:sub(0, pos) .. module_name .. line:sub(pos + 1)
+    vim.api.nvim_set_current_line(nline)
+
+    -- Restore cursor position
+    vim.api.nvim_win_set_cursor(0, cursor)
+end
+function insert_file_from_directory(directory)
+    local current_dir = vim.fn.expand('%:p:h')
+    require('telescope.builtin').find_files({
+        prompt_title = 'Find File',
+        cwd = directory,
+        hidden = true, -- Include hidden files
+        attach_mappings = function(prompt_bufnr, map)
+            map('i', '<CR>', function()
+                local selection = require('telescope.actions.state').get_selected_entry()
+                if not selection then
+                    return
+                end
+                local selected_file = selection.path
+                local relative_path = compute_relative_path(current_dir, selected_file)
+                require('telescope.actions').close(prompt_bufnr)
+                insert_file_at_cursor_position(relative_path)
+            end)
+            return true
+        end,
+    })
+end
+vim.keymap.set("n", "<leader>is", '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/RestaurantDecimals/audio/Main")<CR>', { noremap = true })
+vim.keymap.set("n", "<leader>ii", '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/NumberLineInequalities/images")<CR>', { noremap = true })
+
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
 -- select selection
@@ -491,7 +529,7 @@ vim.keymap.set("n", '<C-s>', ":wa<CR>", { noremap = false, desc = "Save" })
 
 -- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
 vim.keymap.set("n", '<leader>cl',
-    ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")',
+    ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
     { noremap = false, desc = "eslint" })
 
 -- compile shortcut
@@ -543,10 +581,32 @@ DeleteLineAboveCursor = function()
     vim.api.nvim_feedkeys('g@l', 'n', false)
 end
 
+AddCommaToLine = function()
+    _G.AddCommaToLine_callback = function()
+        local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+        local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
+        local new_line = line .. ","
+        vim.api.nvim_buf_set_lines(0, row - 1, row, false, { new_line })
+        vim.api.nvim_win_set_cursor(0, { row, col })
+    end
+    vim.go.operatorfunc = 'v:lua.AddCommaToLine_callback'
+    vim.api.nvim_feedkeys('g@l', 'n', false)
+end
+
 -- Delete line above/below cursor without moving the cursor (also dot repeatable)
 vim.keymap.set("n", '[<del>', DeleteLineAboveCursor, { noremap = true, silent = true })
 vim.keymap.set("n", ']<del>', DeleteLineBelowCursor, { noremap = true, silent = true })
 
 -- Add a space under the cursor in normal mode
 vim.keymap.set("n", '<M-Space>', [[i <esc>i]], { noremap = true, silent = true })
--- vim.keymap.set("n", "<leader>Y", [["+Y]])
+vim.cmd [[vmap <Space>r <Plug>VSurround]]
+
+-- Add a comma to the end of the line
+vim.keymap.set("n", '<leader>,', AddCommaToLine, { noremap = true, silent = true })
+
+-- Add a new nvim command that will open fugitive in a new tab
+vim.cmd [[command! -nargs=0 Tg :tab G]]
+
+-- Add a new nvim command that will close with a capital Q, and save and close with a capital X
+vim.cmd [[command! -nargs=0 Q :q]]
+vim.cmd [[command! -nargs=0 X :x]]

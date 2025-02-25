@@ -106,7 +106,7 @@ return {
                         ["]fci"] = { query = "@call.inner", desc = "Function call inner" },
                         -- Types
                         ["]t"] = { query = "@type_identifier", desc = "Type identifier" },
-                        -- Assignments
+                       -- Assignments
                         ["]l"] = { query = "@assignment_lhs_inner", desc = "Left hand side of an assignment" },
                         ["]r"] = { query = "@assignment_rhs_inner", desc = "Right hand side of an assignment" },
                         -- Folds

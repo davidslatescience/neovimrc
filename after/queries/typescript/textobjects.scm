@@ -75,7 +75,9 @@
 (enum_assignment
     name: (_) @assignment_lhs_inner
 ) @assignment_lhs_outer
-
+(
+  (pair key: (property_identifier) @assignment_lhs_inner @assignment_lhs_outer)
+)
 
 ; Assignment RHS
 (lexical_declaration
@@ -83,6 +85,9 @@
     value: (_) @assignment_rhs_inner @assignment_rhs_outer
   )
 ) 
+(binary_expression
+    right: (_) @assignment_rhs_inner @assignment_rhs_outer
+)
 (expression_statement
   (assignment_expression 
     right: (_) @assignment_rhs_inner @assignment_rhs_outer
@@ -94,6 +99,21 @@
 (enum_assignment
     value: (_) @assignment_rhs_inner
 ) @assignment_rhs_outer
+([
+  (pair
+  	value: (string (string_fragment) @assignment_rhs_inner) @assignment_rhs)
+  (pair
+  	value: (number) @assignment_rhs @assignment_rhs_inner)
+    (pair
+  	value: (true) @assignment_rhs @assignment_rhs_inner)
+        (pair
+  	value: (false) @assignment_rhs @assignment_rhs_inner)
+        (pair
+  	value: (member_expression) @assignment_rhs @assignment_rhs_inner)
+        (pair
+  	value: (non_null_expression) @assignment_rhs @assignment_rhs_inner)
+]
+)
 
 ; Class or object name 
 (class_declaration

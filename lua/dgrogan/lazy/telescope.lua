@@ -21,7 +21,8 @@ return {
             },
             pickers = {
                 find_files = {
-                    file_ignore_patterns = { "node_modules/.*", "^.git/.*", "%.jpg", "%.png", "%.mp3", "Dependencies.js" },
+                    -- file_ignore_patterns = { "node_modules/.*", "^.git/.*", "%.jpg", "%.png", "%.mp3", "Dependencies.js" },
+                    file_ignore_patterns = { "node_modules/.*", "^.git/.*", "%.jpg", "Dependencies.js" },
                     hidden = true,
                 },
             },

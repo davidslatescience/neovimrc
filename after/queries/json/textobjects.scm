@@ -7,7 +7,7 @@
 ; object
 (
   (object) @_start @_start
-  (#make-range! "json_object_old" @_start @_start)
+  (#make-range! "class_or_object_name" @_start @_start)
 )
 
 ; value
@@ -48,8 +48,8 @@
 )
 
 ; class_or_object_name
-(object
-  . (pair 
-    key: (string
-            (string_content) @class_or_object_name)))
+; (object
+;   . (pair 
+;     key: (string
+;             (string_content) @class_or_object_name)))
 
