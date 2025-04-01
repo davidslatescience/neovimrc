@@ -323,23 +323,19 @@ function FormatCode(file_path)
     -- print("Formatting file: " .. file_path .. " with filetype: " .. filetype)
 
     if filetype == 'json' then
-        local command = '%!fixjson -w'
+        local command = '%!fixjson -w -i 4'
         local cursorPosition = vim.api.nvim_win_get_cursor(0)
         vim.cmd("mkview")   -- save folds
         vim.cmd(command)
         vim.cmd("loadview") -- load folds
         vim.api.nvim_win_set_cursor(0, cursorPosition)
     elseif filetype == 'ts' then
-        -- Execute the Bash script synchronously and capture its output
-        -- local command = 'bash ~/bin/fmt.sh 2>&1'
-        -- save any folds
+        local cursorPosition = vim.api.nvim_win_get_cursor(0)
         vim.cmd("mkview")
-        local command = 'bash ~/bin/fmtfile.sh ' .. file_path .. ' 2>&1'
-        local handle = io.popen(command)
-        local result = handle:read('*a')
-        handle:close()
-        -- Print the output to the Neovim console
-        print(result)
+        local command = '%!bash ~/bin/fmtfile.sh ' .. file_path
+        -- local command = '%!bash ~/bin/fmtfile.sh ' .. file_path .. ' 2>&1'
+        vim.cmd(command)
+        vim.api.nvim_win_set_cursor(0, cursorPosition)
     else
         print('FileType not supported. Exiting...')
         return
@@ -509,8 +505,13 @@ function insert_file_from_directory(directory)
         end,
     })
 end
-vim.keymap.set("n", "<leader>is", '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/RestaurantDecimals/audio/Main")<CR>', { noremap = true })
-vim.keymap.set("n", "<leader>ii", '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/NumberLineInequalities/images")<CR>', { noremap = true })
+
+vim.keymap.set("n", "<leader>is",
+    '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/RestaurantDecimals/audio/Main")<CR>',
+    { noremap = true })
+vim.keymap.set("n", "<leader>ii",
+    '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/NumberLineInequalities/images")<CR>',
+    { noremap = true })
 
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
@@ -526,11 +527,6 @@ vim.keymap.set("n", "<C-a>", "ggVG", { desc = "select entire file" })
 vim.keymap.set("n", "<leader>ma", ":<C-u>marks<CR>:normal! `", { desc = "list marks" })
 
 vim.keymap.set("n", '<C-s>', ":wa<CR>", { noremap = false, desc = "Save" })
-
--- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
-vim.keymap.set("n", '<leader>cl',
-    ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
-    { noremap = false, desc = "eslint" })
 
 -- compile shortcut
 vim.keymap.set("n", "<leader>cc",
@@ -610,3 +606,8 @@ vim.cmd [[command! -nargs=0 Tg :tab G]]
 -- Add a new nvim command that will close with a capital Q, and save and close with a capital X
 vim.cmd [[command! -nargs=0 Q :q]]
 vim.cmd [[command! -nargs=0 X :x]]
+
+-- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
+vim.keymap.set("n", '<leader>cl',
+    ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    { noremap = false, desc = "eslint" })

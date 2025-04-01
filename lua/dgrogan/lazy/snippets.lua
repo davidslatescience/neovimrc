@@ -389,6 +389,41 @@ export class MainScene{Name}Display {{
                         repeat_duplicates = true
                     }
                 )),
+                s("New Static Helper Class", fmt([[
+/**
+ * Helper methods for {Name}.
+ */
+export class {Name}Helpers {{
+
+    //====================================================== API ======================================================
+
+    //<editor-fold desc="API" >
+
+    public static Method(): void {{
+    }}
+
+    //</editor-fold>
+}}
+                ]], {
+                        Name = i(1, "Name"),
+                    },
+                    {
+                        repeat_duplicates = true
+                    }
+                )),
+                s("Dynamically Resolved Animation", fmt([[
+        script.addDynamicallyResolvedAnimation(() => {{
+            let script: AnimationScript = new AnimationScript(this.getContext());
+            script.{addTask}
+            return script.getAnimation();
+        }});
+                ]], {
+                        addTask = i(1, "addTask"),
+                    },
+                    {
+                        repeat_duplicates = true
+                    }
+                )),
             })
         end,
     }
