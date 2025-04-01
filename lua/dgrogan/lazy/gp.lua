@@ -3,23 +3,7 @@ return {
     config = function()
         local conf = {
             -- For customization, refer to Install > Configuration in the Documentation/Readme
-            -- openai_api_key: "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",
             providers = {
-                -- secrets can be strings or tables with command and arguments
-                -- secret = { "cat", "path_to/openai_api_key" },
-                -- secret = { "bw", "get", "password", "OPENAI_API_KEY" },
-                -- secret : "sk-...",
-                -- secret = os.getenv("env_name.."),
-
-                -- openai = {
-                --     disable = false,
-                --     endpoint = "https://api.openai.com/v1/chat/completions",
-                --     -- matific secret
-                --     -- secret =
-                --     -- "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"
-                --     secret =
-                --     "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"
-                -- },
                 openai = {},
                 copilot = {
                     endpoint = "https://api.githubcopilot.com/chat/completions",
