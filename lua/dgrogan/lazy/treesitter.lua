@@ -52,18 +52,27 @@ return {
                     scope_incremental = "`",
                     node_decremental = "<bs>",
                 },
+                is_supported = function()
+                    -- This prevents treesitter from causing errors when pressing <CR> inside command search window
+                    -- NB: This is a workaround, not a fix. I believe the latest treesitter will have fixed this.
+                    local mode = vim.api.nvim_get_mode().mode
+                    if mode == "c" then
+                        return false
+                    end
+                    return true
+                end
             },
 
         })
-      if require("nvim-treesitter.parsers").has_parser "typescript" then
-        local folds_query = [[
+        if require("nvim-treesitter.parsers").has_parser "typescript" then
+            local folds_query = [[
   [
     (import_statement)+
     (function_declaration)
     (method_definition)
   ] @fold
   ]]
-        require("vim.treesitter.query").set("typescript", "folds", folds_query)
-      end
+            require("vim.treesitter.query").set("typescript", "folds", folds_query)
+        end
     end
 }

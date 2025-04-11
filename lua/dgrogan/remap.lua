@@ -612,3 +612,6 @@ vim.cmd [[command! -nargs=0 X :x]]
 vim.keymap.set("n", '<leader>cl',
     ':cex system("eslint \\\"**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
     { noremap = false, desc = "eslint" })
+
+
+
