@@ -530,7 +530,8 @@ vim.keymap.set("n", '<C-s>', ":wa<CR>", { noremap = false, desc = "Save" })
 
 -- compile shortcut
 vim.keymap.set("n", "<leader>cc",
-    ":wa<CR>:!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
+    ":wa<CR>:!clear && ~/bin/create_infra_declarations.sh && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
+    -- ":wa<CR>:!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
     { noremap = true, silent = true })
 
 -- compile shortcut
@@ -609,5 +610,5 @@ vim.cmd [[command! -nargs=0 X :x]]
 
 -- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
 vim.keymap.set("n", '<leader>cl',
-    ':cex system("eslint \\\"src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    ':cex system("eslint \\\"**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
     { noremap = false, desc = "eslint" })

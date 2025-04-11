@@ -13,7 +13,9 @@ return {
             append_fname = true, -- Automatically append the file name to `args` if `stdin = false` (default: true)
             args = {
                 '--config',
-                '../../../../../../Dev/SlateRoot/Infrastructure/.eslintrc.json',
+                '/Users/daveg/Dev/SlateRoot/Infrastructure/.eslintrc.json',
+                -- '.eslintrc.json',
+                -- '../../../../../../Dev/SlateRoot/Infrastructure/.eslintrc.json',
                 -- '~/Dev/SlateRoot/Infrastructure/.eslintrc.json',
                 '--format',
                 'json',
