@@ -610,7 +610,7 @@ vim.cmd [[command! -nargs=0 X :x]]
 
 -- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
 vim.keymap.set("n", '<leader>cl',
-    ':cex system("eslint \\\"**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    ':cex system("eslint \\\"./src/slate/widgets/list_matching/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
     { noremap = false, desc = "eslint" })
 
 

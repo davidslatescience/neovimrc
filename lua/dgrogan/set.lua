@@ -38,7 +38,7 @@ vim.opt.colorcolumn = "120"
 vim.opt.errorformat = {'%f: line %l\\, col %c\\, %trror - %m', '%f: line %l\\, col %c\\, %tarning - %m'}
 
 -- cursor will move up and down vertically in the same column
-vim.opt.virtualedit = "all"
+-- vim.opt.virtualedit = "all"
 
 -- show the column the cursor is on
 vim.opt.cursorcolumn = true
