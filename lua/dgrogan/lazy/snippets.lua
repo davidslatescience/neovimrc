@@ -189,10 +189,10 @@ return {
                     }
                 )),
                 s("New Display Class", fmt([[
-import {{RenderingContext}} from "../../../../../../Infrastructure/src/typings/slate/rendering/RenderingContext";
-import {{ISlateEntity}} from "../../../../../../Infrastructure/src/typings/slate/entities/ISlateEntity";
-import {{IEntityTemplatesDescriptor}} from "../../../../../../Infrastructure/src/typings/slate/entities/manipulation/IEntityTemplatesDescriptor";
-import {{IWidgetContainer}} from "../../../../../../Infrastructure/src/typings/slate/widgets/IWidgetContainer";
+import {{RenderingContext}} from "../../../../../../Infrastructure/typings/slate/rendering/RenderingContext";
+import {{ISlateEntity}} from "../../../../../../Infrastructure/typings/slate/entities/ISlateEntity";
+import {{IEntityTemplatesDescriptor}} from "../../../../../../Infrastructure/typings/slate/entities/manipulation/IEntityTemplatesDescriptor";
+import {{IWidgetContainer}} from "../../../../../../Infrastructure/typings/slate/widgets/IWidgetContainer";
 
 /**
  * Handles display of the {Name} for the MainScene.

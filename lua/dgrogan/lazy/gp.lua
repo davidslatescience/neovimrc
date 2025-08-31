@@ -1,5 +1,7 @@
 return {
-    "robitx/gp.nvim",
+    dir = "~/Dev/Personal/gp.nvim",
+    name = "gp",
+    -- "robitx/gp.nvim",
     config = function()
         local conf = {
             -- For customization, refer to Install > Configuration in the Documentation/Readme
@@ -30,6 +32,7 @@ return {
                     command = false,
                     -- string with model name or table with model name and parameters
                     model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
+                    -- model = { model = "gpt-4o", temperature = 1.1, top_p = 1 },
                     -- system prompt (use this to specify the persona/role of the AI)
                     system_prompt = require("gp.defaults").chat_system_prompt,
                 },
@@ -83,7 +86,7 @@ return {
                         .. "Please respond with a suitable git commit message."
                         .. "Generate a git commit message following this structure:\n"
                         ..
-                        "1. First line: conventional commit format (type: concise description) (remember to use semantic types like feat, fix, docs, style, refactor, perf, test, chore, etc.)\n"
+                        "1. First line: conventional commit format (type: concise description) (remember to use semantic types like feat, fix, refactor. Prefer refactor unless the work is obviously a new feature or a bug fix.)\n"
                         .. "2. Optional bullet points if more context helps:\n"
                         .. "   - Keep the second line blank\n"
                         .. "   - Keep them short and direct\n"
@@ -119,13 +122,27 @@ return {
                 end,
 
                 BufferChatNewRepoMix = function(gp, params)
-                    local command = 'repomix'
-                    local handle = io.popen(command)
-                    if not handle then
-                        error("Error executing command: " .. command)
+                    local repomix_file_path = "repomix-output.xml"
+                    local repomix_file = io.open(repomix_file_path, "r") -- Try to open the file in read mode
+                    if repomix_file then
+                        repomix_file:close()              -- Close the file now that we know it exists
+                        local success, err = os.remove(repomix_file_path) -- Attempt to delete the file
+                        if success then
+                            print("File deleted: " .. repomix_file_path)
+                        else
+                            print("Error deleting file: " .. err)
+                        end
+                    else
+                        print("File does not exist: " .. repomix_file_path)
                     end
-                    -- local diff = handle:read('*a')
-                    handle:close()
+                    local command = 'repomix'
+                    -- local handle = io.popen(command)
+                    -- if not handle then
+                    --     error("Error executing command: " .. command)
+                    -- end
+                    -- -- local diff = handle:read('*a')
+                    -- handle:close()
+                    os.execute("repomix > repomix_log.txt")
 
                     -- Attempt to open the file
                     local file, err = io.open("repomix-output.xml", "r")

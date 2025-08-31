@@ -77,6 +77,14 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 -- skeleton for inserting quick text
 vim.keymap.set(
     "n",
+    "<leader>es",
+    "O/** @inheritDoc */<ESC>"
+
+)
+
+-- skeleton for inserting quick text
+vim.keymap.set(
+    "n",
     "<leader>ee",
     -- "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
     -- "O/**\n     * [TODO]\n     */<ESC>?\\[TODO\\]<CR>gn"
@@ -332,8 +340,8 @@ function FormatCode(file_path)
     elseif filetype == 'ts' then
         local cursorPosition = vim.api.nvim_win_get_cursor(0)
         vim.cmd("mkview")
-        local command = '%!bash ~/bin/fmtfile.sh ' .. file_path
-        -- local command = '%!bash ~/bin/fmtfile.sh ' .. file_path .. ' 2>&1'
+        -- local command = '%!bash ~/bin/fmtfile.sh ' .. file_path
+        local command = '%!bash ~/bin/fmtfile.sh ' .. file_path .. ' 2>&1'
         vim.cmd(command)
         vim.api.nvim_win_set_cursor(0, cursorPosition)
     else
@@ -444,7 +452,7 @@ function find_file_and_compute_relative_path()
     local current_dir = vim.fn.expand('%:p:h')
     require('telescope.builtin').find_files({
         prompt_title = 'Find File',
-        cwd = "/Users/daveg/Dev/SlateRoot/Infrastructure/src/typings",
+        cwd = "/Users/daveg/Dev/SlateRoot/Infrastructure/typings",
         -- cwd = vim.fn.expand('%:p:h'), -- Set the current working directory to the directory of the current file
         hidden = true, -- Include hidden files
         attach_mappings = function(prompt_bufnr, map)
@@ -506,8 +514,9 @@ function insert_file_from_directory(directory)
     })
 end
 
+-- Insert audio/sound/image file from a specific directory
 vim.keymap.set("n", "<leader>is",
-    '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/RestaurantDecimals/audio/Main")<CR>',
+    '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/HistoryTimeline/audio/Main")<CR>',
     { noremap = true })
 vim.keymap.set("n", "<leader>ii",
     '<cmd>lua insert_file_from_directory("/Users/daveg/Dev/SlateRoot/Content/MathEpisodes/episodes/NumberLineInequalities/images")<CR>',
@@ -610,8 +619,167 @@ vim.cmd [[command! -nargs=0 X :x]]
 
 -- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
 vim.keymap.set("n", '<leader>cl',
-    ':cex system("eslint \\\"./src/slate/widgets/list_matching/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/slate/widgets/segment_marking/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/views/project/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/slate/widgets/list_choices/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/slate/slides/elements/concrete/old_multiple_choice/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    ':cex system("eslint \\\"./src/elements/old_multiple_choice/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
     { noremap = false, desc = "eslint" })
 
+vim.keymap.set("n", '<leader>cp',
+    -- ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact | grep -e \"name\" ")',
+    -- grep -v -e "no-explicit-any" -e "no-generic-types" -e "typescript-eslint/typedef"
+    ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact | grep -v -e \\\"no-explicit-any\\\" -e \\\"no-generic-types\\\" -e \\\"typescript-eslint/typedef\\\"")',
+    { noremap = false, desc = "eslint" })
 
+function oil_remove_prefix(str, prefix)
+    if str:sub(1, #prefix) == prefix then
+        return str:sub(#prefix + 1)
+    else
+        return str
+    end
+end
+
+function oil_remove_suffix(str, suffix)
+    -- Check if the string ends with the specified suffix
+    if str:sub(- #suffix) == suffix then
+        -- If so, remove the suffix by slicing the string
+        return str:sub(1, - #suffix - 1)
+    else
+        -- Otherwise, return the original string unchanged
+        return str
+    end
+end
+
+function ShowGVForCurrent()
+    -- vim.print(vim.fn.expand("%:~:p:h"))
+    local s = string.format(":GV -- %s",
+        -- local s = string.format(":GV",
+        -- oil_remove_suffix(oil_remove_prefix(oil_remove_prefix(vim.fn.expand("%:~:p:h"), "oil://"), "/Users/daveg/Dev/SlateRoot/Content/"), "/"))
+        oil_remove_prefix(oil_remove_prefix(vim.fn.expand("%:~:p:h"), "oil://"), "/Users/daveg/Dev/SlateRoot/Content/"),
+        "/")
+    vim.cmd(s)
+end
+
+-- View commit history for the current oil directory
+--
+-- vim.cmd(string.format(
+--     [[command! -nargs=0 GVpOld :GV -- %s]],
+--     "MathEpisodes/episodes/"
+-- ))
+-- vim.cmd(string.format(
+--     [[command! -nargs=0 GVp :GV -- %s]],
+--     oil_remove_prefix(vim.fn.expand("%:p:h"), "oil:///")
+-- ))
+-- vim.cmd(string.format(
+--     -- vim.print(vim.fn.expand("%:~:p:h"))
+--     [[command! -nargs=0 GVo :GV -- %s]],
+--     oil_remove_suffix(oil_remove_prefix(oil_remove_prefix(vim.fn.expand("%:~:p:h"), "oil://"), "/Users/daveg/Dev/SlateRoot/Content/"), "/") .. "/")
+-- )
+vim.cmd(
+    [[command! -nargs=0 GVo :lua ShowGVForCurrent()]]
+)
+vim.keymap.set("n", '<leader>gv',
+    -- ':cex system("eslint \\\"./src/slate/widgets/segment_marking/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    ShowGVForCurrent,
+    { noremap = false, desc = "eslint" })
+
+vim.keymap.set("n", "<leader>gc",
+    ":wa<CR>:!clear && ~/bin/auto_commit.sh --all --quiet .<CR>",
+    -- ":wa<CR>:!clear && tsc -p . ; osascript -e 'tell application \"Google Chrome\" to tell the active tab of its first window to reload'<CR>",
+    { noremap = true, silent = true })
+
+
+
+-- Function to call a command line with current buffer info
+function open_webstorm_infra_project()
+    -- Get the full path of the current buffer
+    local full_path = vim.fn.expand('%:p')
+
+    -- Construct the command (replace 'echo' with your desired command)
+    -- local command = string.format('echo "File: %s, Line: %d, Column: %d"',
+    local command = string.format('webstorm ~/Dev/SlateRoot/Infrastructure')
+
+    -- Execute the command
+    -- vim.fn.system(command, {detach = true})
+    vim.system({'sh', '-c', command}, {detach = true})
+    --
+    -- Optional: print the command that was executed
+    print("Executed: " .. command)
+end
+
+-- create a vim command to call this function
+vim.api.nvim_create_user_command('OpenWebstormProject', open_webstorm_infra_project, {})
+
+-- optional: create a keybinding (uncomment to use)
+vim.keymap.set('n', '<leader>wp', open_webstorm_infra_project, { desc = 'open webstorm infra project' })
+
+
+-- Function to call a command line with current buffer info
+function open_webstorm_with_current_buffer()
+    -- Get the full path of the current buffer
+    local full_path = vim.fn.expand('%:p')
+
+    -- Get current cursor position (line and column)
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)
+    local line_number = cursor_pos[1]
+    local column_number = cursor_pos[2] + 1 -- Vim columns are 0-indexed, so add 1
+
+    -- Construct the command (replace 'echo' with your desired command)
+    -- local command = string.format('echo "File: %s, Line: %d, Column: %d"',
+    local command = string.format('webstorm --line %d --column %d %s',
+        line_number, column_number, full_path)
+
+    -- Execute the command
+    -- vim.fn.system(command, {detach = true})
+    vim.system({'sh', '-c', command}, {detach = true})
+
+    -- -- Construct the command (replace 'echo' with your desired command)
+    -- -- local command = string.format('echo "File: %s, Line: %d, Column: %d"',
+    -- local command2 = string.format('webstorm --line %d --column %d %s',
+    --     line_number, column_number, full_path)
+    --
+    -- -- Execute the command
+    -- vim.fn.system(command2)
+    --
+    -- Optional: print the command that was executed
+    print("Executed: " .. command)
+end
+
+
+-- create a vim command to call this function
+vim.api.nvim_create_user_command('OpenWebstorm', open_webstorm_with_current_buffer, {})
+
+-- optional: create a keybinding (uncomment to use)
+vim.keymap.set('n', '<leader>ws', open_webstorm_with_current_buffer, { desc = 'open webstorm with current buffer' })
+
+-- Function to call a command line with current buffer info
+function open_cursor_with_current_buffer()
+    -- Get the full path of the current buffer
+    local full_path = vim.fn.expand('%:p')
+
+    -- Get current cursor position (line and column)
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)
+    local line_number = cursor_pos[1]
+    local column_number = cursor_pos[2] + 1 -- Vim columns are 0-indexed, so add 1
+
+    -- Construct the command (replace 'echo' with your desired command)
+    -- local command = string.format('echo "File: %s, Line: %d, Column: %d"',
+    local command = string.format('cursor ./.vscode/*.code-workspace --goto %s:%d:%d',
+        full_path, line_number, column_number)
+
+    -- Execute the command
+    vim.fn.system(command)
+
+    -- Optional: print the command that was executed
+    print("Executed: " .. command)
+end
+
+
+-- create a vim command to call this function
+vim.api.nvim_create_user_command('OpenCursor', open_cursor_with_current_buffer, {})
+
+-- optional: create a keybinding (uncomment to use)
+vim.keymap.set('n', '<leader>cs', open_cursor_with_current_buffer, { desc = 'open cursor with current buffer' })
 
