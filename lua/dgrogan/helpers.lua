@@ -80,9 +80,9 @@ end
 -- ============================================================================
 
 -- Truncate a string to a maximum length
-local function truncateString(str, maxLength)
-    if #str > maxLength then
-        return string.sub(str, 1, maxLength)
+local function truncate_string(str, max_length)
+    if #str > max_length then
+        return string.sub(str, 1, max_length)
     else
         return str
     end
@@ -131,7 +131,7 @@ function M.insert_region_start()
     local padding = string.rep('=', ((max_length - #input) / 2) - 4)
 
     local centered_text = '    //' .. padding .. ' ' .. input .. ' ' .. padding .. string.rep('=', max_length)
-    centered_text = truncateString(centered_text, max_length)
+    centered_text = truncate_string(centered_text, max_length)
     local editor_fold_text = '    //<editor-fold desc="' .. input .. '" >'
 
     local current_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -282,7 +282,7 @@ local function insert_import_line_at_beginning(line)
 end
 
 -- Open telescope file picker for Infrastructure typings and insert import statement
-function M.find_file_and_compute_relative_path()
+function M.insert_typescript_import_from_typings()
     local current_dir = vim.fn.expand('%:p:h')
     require('telescope.builtin').find_files({
         prompt_title = 'Find File',

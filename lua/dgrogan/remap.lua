@@ -104,7 +104,7 @@ vim.keymap.set("n", "<leader>ci", function()
     vim.cmd("TSToolsOrganizeImports")
 end, { noremap = true, desc = "Organize imports" })
 
-vim.keymap.set("n", "<leader>in", helpers.find_file_and_compute_relative_path, { noremap = true, desc = "Insert import from typings" })
+vim.keymap.set("n", "<leader>in", helpers.insert_typescript_import_from_typings, { noremap = true, desc = "Insert import from typings" })
 
 -- Insert file from specific directories
 vim.keymap.set("n", "<leader>is",
