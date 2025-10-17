@@ -227,7 +227,8 @@ vim.api.nvim_create_user_command('OpenCursor', helpers.open_cursor_with_current_
 -- ============================================================================
 
 -- Auto-reload files changed externally
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
     command = "if mode() != 'c' | checktime | endif",
     pattern = { "*" },
     desc = "Auto-reload files changed externally"
