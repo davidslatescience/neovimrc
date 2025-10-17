@@ -617,22 +617,6 @@ vim.cmd [[command! -nargs=0 Tg :tab G]]
 vim.cmd [[command! -nargs=0 Q :q]]
 vim.cmd [[command! -nargs=0 X :x]]
 
--- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
-vim.keymap.set("n", '<leader>cl',
-    -- ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
-    -- ':cex system("eslint \\\"./src/slate/widgets/segment_marking/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
-    -- ':cex system("eslint \\\"./src/views/project/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
-    -- ':cex system("eslint \\\"./src/slate/widgets/list_choices/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
-    -- ':cex system("eslint \\\"./src/slate/slides/elements/concrete/old_multiple_choice/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
-    ':cex system("eslint \\\"./src/elements/old_multiple_choice/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
-    { noremap = false, desc = "eslint" })
-
-vim.keymap.set("n", '<leader>cp',
-    -- ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact | grep -e \"name\" ")',
-    -- grep -v -e "no-explicit-any" -e "no-generic-types" -e "typescript-eslint/typedef"
-    ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact | grep -v -e \\\"no-explicit-any\\\" -e \\\"no-generic-types\\\" -e \\\"typescript-eslint/typedef\\\"")',
-    { noremap = false, desc = "eslint" })
-
 function oil_remove_prefix(str, prefix)
     if str:sub(1, #prefix) == prefix then
         return str:sub(#prefix + 1)
@@ -755,7 +739,7 @@ vim.api.nvim_create_user_command('OpenWebstorm', open_webstorm_with_current_buff
 vim.keymap.set('n', '<leader>ws', open_webstorm_with_current_buffer, { desc = 'open webstorm with current buffer' })
 
 -- Function to call a command line with current buffer info
-function open_cursor_with_current_buffer()
+function open_cursor_with_current_buffer_inner(cursorProjectPath)
     -- Get the full path of the current buffer
     local full_path = vim.fn.expand('%:p')
 
@@ -766,8 +750,11 @@ function open_cursor_with_current_buffer()
 
     -- Construct the command (replace 'echo' with your desired command)
     -- local command = string.format('echo "File: %s, Line: %d, Column: %d"',
-    local command = string.format('cursor ./.vscode/*.code-workspace --goto %s:%d:%d',
-        full_path, line_number, column_number)
+    -- local command = string.format('cursor ./.vscode/*.code-workspace --goto %s:%d:%d',
+    --     full_path, line_number, column_number)
+    -- local command = string.format('cursor ~/Dev/SlateRoot/.vscode/*.code-workspace --goto %s:%d:%d',
+    local command = string.format('cursor %s --goto %s:%d:%d',
+        cursorProjectPath, full_path, line_number, column_number)
 
     -- Execute the command
     vim.fn.system(command)
@@ -776,10 +763,39 @@ function open_cursor_with_current_buffer()
     print("Executed: " .. command)
 end
 
+function open_cursor_with_current_buffer()
+    open_cursor_with_current_buffer_inner('~/Dev/SlateRoot/.vscode/*.code-workspace')
+end
 
--- create a vim command to call this function
+function open_local_cursor_with_current_buffer()
+    -- local command = string.format('cursor ./.vscode/*.code-workspace --goto %s:%d:%d',
+    open_cursor_with_current_buffer_inner('./.vscode/*.code-workspace')
+end
+
+-- create a vim command to call cursor with current buffer
 vim.api.nvim_create_user_command('OpenCursor', open_cursor_with_current_buffer, {})
 
--- optional: create a keybinding (uncomment to use)
 vim.keymap.set('n', '<leader>cs', open_cursor_with_current_buffer, { desc = 'open cursor with current buffer' })
+-- opens the current buffer with a local cursor project - note that this is
+-- useful if you want to run multiple instances of cursor with different
+-- projects - for example for using the code completion aspects of cursor in Content2, while continuing with a different
+-- episode in Content
+vim.keymap.set('n', '<leader>cx', open_local_cursor_with_current_buffer, { desc = 'open local cursor with current buffer' })
+
+-- Populates quickfix with output from eslint on the currently open solution, and goes to the first error
+vim.keymap.set("n", '<leader>cl',
+    ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/slate/widgets/segment_marking/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/views/project/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/slate/widgets/list_choices/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/slate/slides/elements/concrete/old_multiple_choice/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./src/elements/old_multiple_choice/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    -- ':cex system("eslint \\\"./typings/slate/user_input/input_widgets/options/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact")<CR>',
+    { noremap = false, desc = "eslint" })
+
+vim.keymap.set("n", '<leader>cp',
+    -- ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact | grep -e \"name\" ")',
+    -- grep -v -e "no-explicit-any" -e "no-generic-types" -e "typescript-eslint/typedef"
+    ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact | grep -v -e \\\"no-explicit-any\\\" -e \\\"no-generic-types\\\" -e \\\"typescript-eslint/typedef\\\"")',
+    { noremap = false, desc = "eslint" })
 
