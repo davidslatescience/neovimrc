@@ -149,6 +149,10 @@ vim.keymap.set("n", '<leader>cp',
     ':cex system("eslint \\\"./src/**/*.ts\\\" --config ~/Dev/SlateRoot/Infrastructure/.eslintrc.json --format compact | grep -v -e \\\"no-explicit-any\\\" -e \\\"no-generic-types\\\" -e \\\"typescript-eslint/typedef\\\"")',
     { noremap = false, desc = "ESLint filtered to quickfix" })
 
+vim.keymap.set("n", '<leader>cw',
+    ':cex system("~/bin/lnt.sh -w")<CR>',
+    { noremap = false, desc = "Run lnt -w to quickfix" })
+
 -- ============================================================================
 -- Git Operations
 -- ============================================================================

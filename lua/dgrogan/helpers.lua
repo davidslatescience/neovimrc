@@ -5,18 +5,21 @@ local M = {}
 -- Clipboard Functions
 -- ============================================================================
 
+-- Copy from system clipboard to vim clipboard and 's' register
 function M.copy_from_system_clipboard()
     vim.cmd("let @\"=@+")
     vim.cmd("let @s=@+")
     print("Copied system clipboard to vim clipboard and 's' register")
 end
 
+-- Copy from vim clipboard to system clipboard and 's' register
 function M.copy_to_system_clipboard()
     vim.cmd("let @+=@\"")
     vim.cmd("let @s=@\"")
     print("Copied vim clipboard to system clipboard and 's' register")
 end
 
+-- Interactive clipboard sync - prompts user to choose direction
 function M.custom_system_clipboard_copy()
     print("Copy to system clipboard? (Y(es)/N(o)/C(ancel))")
     local char = vim.fn.getcharstr()
@@ -33,6 +36,7 @@ end
 -- Text Editing Functions
 -- ============================================================================
 
+-- Delete the line below the cursor without moving cursor position (dot repeatable)
 function M.delete_line_below_cursor()
     _G.delete_line_below_cursor_callback = function()
         local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -43,6 +47,7 @@ function M.delete_line_below_cursor()
     vim.api.nvim_feedkeys('g@l', 'n', false)
 end
 
+-- Delete the line above the cursor without moving cursor position (dot repeatable)
 function M.delete_line_above_cursor()
     _G.delete_line_above_cursor_callback = function()
         local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -57,6 +62,7 @@ function M.delete_line_above_cursor()
     vim.api.nvim_feedkeys('g@l', 'n', false)
 end
 
+-- Add a comma to the end of the current line (dot repeatable)
 function M.add_comma_to_line()
     _G.add_comma_to_line_callback = function()
         local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -73,6 +79,7 @@ end
 -- String Utility Functions
 -- ============================================================================
 
+-- Truncate a string to a maximum length
 local function truncateString(str, maxLength)
     if #str > maxLength then
         return string.sub(str, 1, maxLength)
@@ -81,6 +88,7 @@ local function truncateString(str, maxLength)
     end
 end
 
+-- Remove prefix from string if it exists
 function M.oil_remove_prefix(str, prefix)
     if str:sub(1, #prefix) == prefix then
         return str:sub(#prefix + 1)
@@ -89,6 +97,7 @@ function M.oil_remove_prefix(str, prefix)
     end
 end
 
+-- Remove suffix from string if it exists
 function M.oil_remove_suffix(str, suffix)
     if str:sub(-#suffix) == suffix then
         return str:sub(1, -#suffix - 1)
@@ -101,6 +110,7 @@ end
 -- Region/Fold Insertion Functions
 -- ============================================================================
 
+-- Insert a precondition region fold marker (TypeScript/JavaScript editor-fold)
 function M.insert_precondition_region_start()
     local input = "Preconditions"
     local editor_fold_text = '        //<editor-fold desc="' .. input .. '" >'
@@ -114,6 +124,7 @@ function M.insert_precondition_region_start()
     vim.api.nvim_win_set_cursor(0, { current_line, 1 })
 end
 
+-- Insert a custom region start with centered text and editor-fold marker
 function M.insert_region_start()
     local input = vim.fn.input('Enter text: ')
     local max_length = math.min(119, vim.o.columns)
@@ -136,6 +147,7 @@ function M.insert_region_start()
     vim.api.nvim_win_set_cursor(0, { current_line, 1 })
 end
 
+-- Insert a region end marker to close an editor-fold
 function M.insert_region_end()
     local editor_fold_text = '    //</editor-fold>'
     local current_line = vim.api.nvim_win_get_cursor(0)[1] + 1
@@ -153,6 +165,7 @@ end
 -- File Formatting Functions
 -- ============================================================================
 
+-- Get the file type based on file extension
 local function get_file_type()
     local filename = vim.fn.expand("%:t")
     local ext = string.match(filename, "%.([^%.]+)$")
@@ -165,6 +178,8 @@ local function get_file_type()
     return filetype_map[ext] or "default"
 end
 
+-- Format code using custom formatters (fixjson for JSON, fmtfile.sh for TypeScript)
+-- Preserves cursor position and folds
 function M.format_code(file_path)
     local filetype = get_file_type()
 
@@ -191,6 +206,7 @@ end
 -- TypeScript Import Helper Functions
 -- ============================================================================
 
+-- Compute relative path from directory to file
 local function compute_relative_path(directory, file)
     directory = directory:gsub("\\", "/")
     file = file:gsub("\\", "/")
@@ -221,6 +237,7 @@ local function compute_relative_path(directory, file)
     return relative_path
 end
 
+-- Extract filename from path without extension
 local function extract_filename_without_extension(relative_path)
     local last_slash_index = relative_path:match(".*/()")
     local file_name_with_extension = relative_path:sub(last_slash_index)
@@ -228,6 +245,7 @@ local function extract_filename_without_extension(relative_path)
     return filename_without_extension
 end
 
+-- Remove trailing ".d" from TypeScript declaration file names
 local function remove_trailing_d(str)
     if str:sub(-2) == ".d" then
         return str:sub(1, -3)
@@ -236,6 +254,7 @@ local function remove_trailing_d(str)
     end
 end
 
+-- Extract file path without extension
 local function extract_file_path_without_extension(directory)
     local last_slash_index = directory:match(".*/()")
     local directory_path = directory:sub(1, last_slash_index - 1)
@@ -244,6 +263,7 @@ local function extract_file_path_without_extension(directory)
     return directory_path .. file_path_without_extension
 end
 
+-- Insert TypeScript import statement at beginning of file
 local function insert_import_line_at_beginning(line)
     local module_ref = extract_file_path_without_extension(line)
     local module_name = extract_filename_without_extension(line)
@@ -261,6 +281,7 @@ local function insert_import_line_at_beginning(line)
     vim.api.nvim_win_set_cursor(0, cursor)
 end
 
+-- Open telescope file picker for Infrastructure typings and insert import statement
 function M.find_file_and_compute_relative_path()
     local current_dir = vim.fn.expand('%:p:h')
     require('telescope.builtin').find_files({
@@ -285,6 +306,7 @@ function M.find_file_and_compute_relative_path()
     })
 end
 
+-- Insert filename (without extension) at cursor position
 local function insert_file_at_cursor_position(file_path)
     local module_name = extract_filename_without_extension(file_path)
     module_name = remove_trailing_d(module_name)
@@ -298,6 +320,7 @@ local function insert_file_at_cursor_position(file_path)
     vim.api.nvim_win_set_cursor(0, cursor)
 end
 
+-- Open telescope file picker for a specific directory and insert filename at cursor
 function M.insert_file_from_directory(directory)
     local current_dir = vim.fn.expand('%:p:h')
     require('telescope.builtin').find_files({
@@ -324,6 +347,7 @@ end
 -- Git Functions
 -- ============================================================================
 
+-- Show GV (git commit browser) for current Oil.nvim directory
 function M.show_gv_for_current()
     local s = string.format(":GV -- %s",
         M.oil_remove_prefix(M.oil_remove_prefix(vim.fn.expand("%:~:p:h"), "oil://"), "/Users/daveg/Dev/SlateRoot/Content/"),
@@ -335,6 +359,7 @@ end
 -- LSP Configuration
 -- ============================================================================
 
+-- Setup LSP keymaps when LSP attaches to a buffer
 function M.setup_lsp_keymaps(ev)
     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
@@ -361,12 +386,14 @@ end
 -- External Editor Functions
 -- ============================================================================
 
+-- Open WebStorm with the Infrastructure project
 function M.open_webstorm_infra_project()
     local command = 'webstorm ~/Dev/SlateRoot/Infrastructure'
     vim.system({'sh', '-c', command}, {detach = true})
     print("Executed: " .. command)
 end
 
+-- Open WebStorm with current buffer at cursor position
 function M.open_webstorm_with_current_buffer()
     local full_path = vim.fn.expand('%:p')
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
@@ -380,6 +407,7 @@ function M.open_webstorm_with_current_buffer()
     print("Executed: " .. command)
 end
 
+-- Open Cursor editor with current buffer at cursor position (internal helper)
 local function open_cursor_with_current_buffer_inner(cursorProjectPath)
     local full_path = vim.fn.expand('%:p')
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
@@ -393,10 +421,12 @@ local function open_cursor_with_current_buffer_inner(cursorProjectPath)
     print("Executed: " .. command)
 end
 
+-- Open Cursor editor with current buffer using main workspace
 function M.open_cursor_with_current_buffer()
     open_cursor_with_current_buffer_inner('~/Dev/SlateRoot/.vscode/*.code-workspace')
 end
 
+-- Open Cursor editor with current buffer using local workspace
 function M.open_local_cursor_with_current_buffer()
     open_cursor_with_current_buffer_inner('./.vscode/*.code-workspace')
 end
